@@ -1,0 +1,90 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# [START cloudbuild]
+steps:
+
+# This step builds the container image.
+- name: 'gcr.io/cloud-builders/docker'
+  id: Build
+  args:
+  - 'build'
+  - '--build-arg'
+  - 'version=$SHORT_SHA'
+  - '-t'
+  - 'europe-docker.pkg.dev/dft-rsss-findtransptdata-dev/dft-nap/facade:$SHORT_SHA'
+  - '.'
+#  timeout: 660s
+# This step pushes the image to Artifact Registry
+# The PROJECT_ID and SHORT_SHA variables are automatically
+# replaced by  Cloud Build.
+- name: 'gcr.io/cloud-builders/docker'
+  id: Push
+  args:
+  - 'push'
+  - 'europe-docker.pkg.dev/dft-rsss-findtransptdata-dev/dft-nap/facade:$SHORT_SHA'
+# [END cloudbuild]
+
+# Access the id_github file from Secret Manager, and setup SSH
+- name: 'gcr.io/cloud-builders/git'
+  secretEnv: ['K8_INFRA']
+  entrypoint: 'bash'
+  args:
+  - -c
+  - |
+    echo "$$K8_INFRA" >> /root/.ssh/id_rsa
+    chmod 400 /root/.ssh/id_rsa
+    cp known_hosts.github /root/.ssh/known_hosts
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+# Clone the repository
+- name: 'gcr.io/cloud-builders/git'
+  args:
+  - clone
+  - --recurse-submodules
+  - git@github.com:department-for-transport-public/findtransportdata-K8s.git
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+# This step generates the new manifest
+- name: 'gcr.io/cloud-builders/git'
+  secretEnv: ['K8_INFRA']
+  id: Generate manifest
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    echo "$$K8_INFRA" >> /root/.ssh/id_rsa
+    chmod 400 /root/.ssh/id_rsa
+    cp known_hosts.github /root/.ssh/known_hosts
+    git config --global user.name "cloudbuilder"
+    git config --global user.email "cloudbuilder@gmail.com"
+    cd dft-k8-test
+    git push origin --delete candidate_facade
+    git checkout -b candidate_facade
+    sed "s/COMMIT_SHA/${SHORT_SHA}/g" manifests/facade/facade-deployment.yaml.tpl > manifests/facade/facade-deployment.yaml
+    git add manifest/facade/facade-deployment.yaml
+    git commit -m "europe-docker.pkg.dev/dft-rsss-findtransptdata-dev/dft-nap/facade:${SHORT_SHA} Built from commit ${COMMIT_SHA} of repository  Author: $(git log --format='%an <%te>' -n 1 HEAD)"
+    git push --set-upstream origin candidate_facade
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/dft-rsss-findtransptdata-dev/secrets/K8-infra/versions/latest
+    env: 'K8_INFRA'  

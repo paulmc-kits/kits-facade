@@ -1,0 +1,55 @@
+{% extends "layouts/layout-govuk.njk" %}
+
+{# TODO: Sort out super title & how to pass it in #}
+{% set title = "Privacy" %}
+{% block pageTitle %}{{title}}{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl">
+                Find Transport Data (National Access Point)
+            </h1>
+
+            <h2 class="govuk-heading-m">
+                Privacy Notice (Draft)
+            </h2>
+
+            <p class="govuk-body-m">
+                Find Transport Data is a data service provided by the Department for Transport (DfT).
+            </p>
+
+            <p class="govuk-body-m">
+                As part of this service, we are asking for your name and email address. This is so we can provide access to the publishing service and to send you email notifications about service changes, we will use your personal data for these purposes.
+            </p>
+
+            <p class="govuk-body-m">
+                The processing of your personal data is necessary for the exercise of our functions as a government department and DfT will, under data protection law, be the Controller for this information.
+            </p>
+
+            <p class="govuk-body-m">
+                DfT&apos;s privacy policy has more information about your rights in relation to your personal data, how to complain and how to contact the Data Protection Officer. You can view it at:
+            </p>
+
+            <p class="govuk-body-m">
+                <a href="#" class="govuk-link">https://www.gov.uk/government/organisations/department-for-transport/about/personal-information-charter</a>
+            </p>
+
+            <p class="govuk-body-m">
+                Your information will be kept securely on DfT servers for the length of time you use this service and up to 12 months after you leave the service whereby all information will then be deleted.
+            </p>
+
+            <p class="govuk-body-m">
+                To receive this information by telephone or post, contact us on 0300 330 3000 or write to:
+            </p>
+
+            <p class="govuk-body-m">
+                Data Protection Officer<br />
+                Department for Transport<br />
+                1 Priory Square<br />
+                Hastings<br />
+                TN34 1EA
+            </p>
+        </div>
+    </div>
+{% endblock %}
