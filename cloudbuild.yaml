@@ -23,7 +23,7 @@ steps:
   - '--build-arg'
   - 'version=$SHORT_SHA'
   - '-t'
-  - 'europe-docker.pkg.dev/dft-rsss-findtransptdata-dev/dft-nap/facade:$SHORT_SHA'
+  - ' europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:$SHORT_SHA'
   - '.'
 #  timeout: 660s
 # This step pushes the image to Artifact Registry
@@ -33,17 +33,17 @@ steps:
   id: Push
   args:
   - 'push'
-  - 'europe-docker.pkg.dev/dft-rsss-findtransptdata-dev/dft-nap/facade:$SHORT_SHA'
+  - ' europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:$SHORT_SHA' 
 # [END cloudbuild]
 
 # Access the id_github file from Secret Manager, and setup SSH
 - name: 'gcr.io/cloud-builders/git'
-  secretEnv: ['K8_INFRA']
+  secretEnv: ['SSH_KEY']
   entrypoint: 'bash'
   args:
   - -c
   - |
-    echo "$$K8_INFRA" >> /root/.ssh/id_rsa
+    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
     chmod 400 /root/.ssh/id_rsa
     cp known_hosts.github /root/.ssh/known_hosts
   volumes:
@@ -55,20 +55,20 @@ steps:
   args:
   - clone
   - --recurse-submodules
-  - git@github.com:department-for-transport-public/findtransportdata-K8s.git
+  - git@github.com:paulmc-kits/dft-k8-test.git 
   volumes:
   - name: 'ssh'
     path: /root/.ssh
 
 # This step generates the new manifest
 - name: 'gcr.io/cloud-builders/git'
-  secretEnv: ['K8_INFRA']
+  secretEnv: ['SSH_KEY']
   id: Generate manifest
   entrypoint: 'bash'
   args:
   - '-c'
   - |
-    echo "$$K8_INFRA" >> /root/.ssh/id_rsa
+    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
     chmod 400 /root/.ssh/id_rsa
     cp known_hosts.github /root/.ssh/known_hosts
     git config --global user.name "cloudbuilder"
@@ -86,5 +86,5 @@ steps:
 
 availableSecrets:
   secretManager:
-  - versionName: projects/dft-rsss-findtransptdata-dev/secrets/K8-infra/versions/latest
-    env: 'K8_INFRA'  
+  - versionName: projects/fleet-coyote-341511/secrets/SSH-KEY/versions/latest
+    env: 'SSH_KEY'
