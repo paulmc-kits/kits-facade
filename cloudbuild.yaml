@@ -76,12 +76,12 @@ steps:
     git config --global user.name "cloudbuilder"
     git config --global user.email "cloudbuilder@gmail.com"
     cd dft-k8-test
-    git push origin --delete candidate_facade
-    git checkout -b candidate_facade
+    git push origin --delete candidate
+    git checkout -b candidate
     sed "s/COMMIT_SHA/${SHORT_SHA}/g" manifests/facade/facade-deployment.yaml.tpl > manifests/facade/facade-deployment.yaml
     git add manifest/facade/facade-deployment.yaml
     git commit -m "europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:${SHORT_SHA} Built from commit ${COMMIT_SHA} of repository  Author: $(git log --format='%an <%te>' -n 1 HEAD)"
-    git push --set-upstream origin candidate_facade
+    git push --set-upstream origin candidate
   volumes:
   - name: 'ssh'
     path: /root/.ssh
