@@ -1,0 +1,443 @@
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% extends "layouts/layout-govuk.njk" %}
+
+{# TODO: Sort out super title & how to pass it in #}
+{% set title = datasetDetails.title %}
+{% block pageTitle %}{{title}}{% endblock %}
+
+{# START: breadcrumbs #}
+{% block breadcrumbs %}
+    {{ govukBreadcrumbs({
+    items: [
+        {
+        text: "Home",
+        href: "/"
+        },
+        {
+        text: "All datasets",
+        href: "/browse"
+        },
+        {
+        text: datasetDetails.title
+        }
+    ]
+    }) }}
+{% endblock %}
+{# END: breadcrumbs #}
+
+{# START: var setup #}
+    {# - locations #}
+    {% set locationsText %}
+    {% for location in datasetDetails.locations %}{{ location }}{{ ", " if not loop.last else "" }}{% else %}-{% endfor %}
+    {% endset %}
+
+    {# - topics #}
+    {% set topicsHtml %}
+    {% for topic in datasetDetails.topics %}
+        {{ govukTag({
+        text: topic
+        }) }}
+    {% else %}-{% endfor %}
+    {% endset %}
+
+    {# - time period #}
+    {% set timePeriodText %}
+    {% if datasetDetails.time_period is defined and datasetDetails.time_period | length %}
+    {{ datasetDetails.time_period }}
+    {% else %}
+    -
+    {% endif %}
+    {% endset %}
+
+    {# - update frequency #}
+    {% set updateFrequencyText %}
+    {% if datasetDetails.update_frequency.name is defined and datasetDetails.update_frequency.name | length %}
+    {{ datasetDetails.update_frequency.name }}
+    {% else %}
+    -
+    {% endif %}
+    {% endset %}
+
+    {# - organisation #}
+    {% set organisationHtml %}
+    <a href="/browse?organisation={{ datasetDetails.organization.name }}" class="govuk-link">{{ datasetDetails.organization.title }}</a>
+    {% endset %}
+
+    {# - licence #}
+    {% set licenceHtml %}
+    {% if datasetDetails.licence.type is defined and datasetDetails.licence.type | length %}
+    {{ govukTag({
+        text: datasetDetails.licence.type
+        }) }}
+    {% else %}
+    -
+    {% endif %}
+    {% endset %}
+
+    {# - transport modes #}
+    {% set transportModesText %}
+    {% for mode in datasetDetails.transport_modes %}{{ mode }}{{ ", " if not loop.last else "" }}{% else %}-{% endfor %}
+    {% endset %}
+
+    {# - road network #}
+    {% set roadNetworkText %}
+    {% for network in datasetDetails.road_networks %}{{ network }}{{ ", " if not loop.last else "" }}{% else %}-{% endfor %}
+    {% endset %}
+
+    {# - description #}
+    {% set descriptionText %}
+    {% if datasetDetails.description is defined and datasetDetails.description | length %}
+    {{ datasetDetails.description }}
+    {% else %}
+    -
+    {% endif %}
+    {% endset %}
+
+    {# - regions #}
+    {% set regionsText %}
+    {% for region in datasetDetails.regions %}{{ region }}{{ ", " if not loop.last else "" }}{% else %}-{% endfor %}
+    {% endset %}
+
+    {# - version #}
+    {% set versionText %}
+    {% if datasetDetails.version is defined and datasetDetails.version | length %}
+    {{ datasetDetails.version }}
+    {% else %}
+    -
+    {% endif %}
+    {% endset %}
+
+    {# - date added #}
+    {% set dateAddedText %}
+    {% if datasetDetails.metadata_created_formatted is defined and datasetDetails.metadata_created_formatted | length %}
+    {{ datasetDetails.metadata_created_formatted }}
+    {% else %}
+    -
+    {% endif %}
+    {% endset %}
+
+    {# - last updated #}
+    {% set lastUpdatedText %}
+    {% if datasetDetails.metadata_modified_formatted is defined and datasetDetails.metadata_modified_formatted | length %}
+    {{ datasetDetails.metadata_modified_formatted }}
+    {% else %}
+    -
+    {% endif %}
+    {% endset %}
+
+    {# -summary #}
+    {% set notesHtml %}
+    {% if datasetDetails.notes_formatted is defined and datasetDetails.notes_formatted | length %}
+    {{ datasetDetails.notes_formatted | safe }}
+    {% else %}
+    -
+    {% endif %}
+    {% endset %}
+
+    {# -formats #}
+    {% set dataFormatsText %}
+    {% if datasetDetails.data_formats is defined and datasetDetails.data_formats | length %}
+    {{ datasetDetails.data_formats }}
+    {% else %}
+    -
+    {% endif %}
+    {% endset %}
+{# END: var setup #}
+
+{% set summaryHtml %}
+    {{ govukSummaryList({
+    classes: 'govuk-summary-list--no-border',
+    rows: [
+        {
+            key: {
+                text: "Locations"
+            },
+            value: {
+                text: locationsText
+            }
+        },
+        {
+            key: {
+                text: "Topics"
+            },
+            value: {
+                html: topicsHtml
+            }
+        },
+        {
+            key: {
+                text: "Time period"
+            },
+            value: {
+                text: timePeriodText
+            }
+        },
+        {
+            key: {
+                text: "Update frequency"
+            },
+            value: {
+                text: updateFrequencyText
+            }
+        },
+        {
+            key: {
+                text: "Organisation"
+            },
+            value: {
+                html: organisationHtml
+            }
+        },
+        {
+            key: {
+                text: "Licence"
+            },
+            value: {
+                html: licenceHtml
+            }
+        },
+        {
+            key: {
+                text: "Transport mode"
+            },
+            value: {
+                text: transportModesText
+            }
+        },
+        {
+            key: {
+                text: "Road network"
+            },
+            value: {
+                text: roadNetworkText
+            }
+        },
+        {
+            key: {
+                text: "Description"
+            },
+            value: {
+                text: descriptionText
+            }
+        }
+    ]
+    }) }}
+{% endset %}
+
+{% set moreDetailsHtml %}
+    {{ govukSummaryList({
+    classes: 'govuk-summary-list--no-border',
+    rows: [
+        {
+            key: {
+                text: "Locations"
+            },
+            value: {
+                text: locationsText
+            }
+        },
+        {
+            key: {
+                text: "Regions"
+            },
+            value: {
+                text: regionsText
+            }
+        },
+        {
+            key: {
+                text: "Topics"
+            },
+            value: {
+                html: topicsHtml
+            }
+        },
+        {
+            key: {
+                text: "Time period"
+            },
+            value: {
+                text: timePeriodText
+            }
+        },
+        {
+            key: {
+                text: "Update frequency"
+            },
+            value: {
+                text: updateFrequencyText
+            }
+        },
+        {
+            key: {
+                text: "Organisation"
+            },
+            value: {
+                html: organisationHtml
+            }
+        },
+        {
+            key: {
+                text: "Licence"
+            },
+            value: {
+                html: licenceHtml
+            }
+        },
+        {
+            key: {
+                text: "Transport mode"
+            },
+            value: {
+                text: transportModesText
+            }
+        },
+        {
+            key: {
+                text: "Road network"
+            },
+            value: {
+                text: roadNetworkText
+            }
+        },
+        {
+            key: {
+                text: "Version"
+            },
+            value: {
+                text: versionText
+            }
+        },
+        {
+            key: {
+                text: "Date added"
+            },
+            value: {
+                text: dateAddedText
+            }
+        },
+        {
+            key: {
+                text: "Last updated"
+            },
+            value: {
+                text: lastUpdatedText
+            }
+        },
+        {
+            key: {
+                text: "Summary"
+            },
+            value: {
+                html: notesHtml
+            }
+        }
+        
+    ]
+    }) }}
+{% endset %}
+
+{% set contactHtml %}
+    {{ govukSummaryList({
+    classes: 'govuk-summary-list--no-border',
+    rows: [
+        {
+            key: {
+                text: "Contact"
+            },
+            value: {
+                text: datasetDetails.author
+            }
+        },
+        {
+            key: {
+                text: "Contact email"
+            },
+            value: {
+                text: datasetDetails.author_email
+            }
+        }
+    ]
+    }) }}
+{% endset %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl">
+                {{ datasetDetails.title }}
+            </h1>
+
+            {{
+            govukTabs({
+                items: [
+                    {
+                        label: "Summary",
+                        id: "summary",
+                        panel: {
+                            html: summaryHtml
+                        }
+                    },
+                    {
+                        label: "More details",
+                        id: "more-details",
+                        panel: {
+                            html: moreDetailsHtml
+                        }
+                    },
+                    {
+                        label: "Contact",
+                        id: "contact",
+                        panel: {
+                            html: contactHtml
+                        }
+                    }
+                ]
+                })
+            }}
+
+            {# <p class="govuk-body-m">
+                {{ datasetDetails | dump(2) }}
+            </p> #}
+
+            <h2 class="govuk-heading-m">View this dataset</h2>
+
+            <p class="govuk-body-m">
+                This dataset is hosted and viewable at:
+            </p>
+
+            <p class="govuk-body-m">
+                <a href="{{ datasetDetails.url }}" class="govuk-link">{{ datasetDetails.url }}</a>
+            </p>
+
+            <p class="govuk-body-m">
+                To access this dataset you will need to visit their website.
+            </p>
+
+            {{ govukSummaryList({
+                classes: 'govuk-summary-list--no-border',
+                rows: [
+                    {
+                        key: {
+                            text: "Data formats"
+                        },
+                        value: {
+                            text: dataFormatsText
+                        }
+                    }
+                ]
+            }) }}
+
+            
+            {{ govukButton({
+                text: "Go to the dataset",
+                href: datasetDetails.url
+            }) }}
+        </div>
+    </div>
+{% endblock %}

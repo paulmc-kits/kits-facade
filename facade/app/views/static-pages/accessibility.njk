@@ -1,0 +1,109 @@
+{% extends "layouts/layout-govuk.njk" %}
+
+{# TODO: Sort out super title & how to pass it in #}
+{% set title = "Accessibility" %}
+{% block pageTitle %}{{title}}{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl">
+                Accessibility statement for the Find Transport Data service
+            </h1>
+
+            <p class="govuk-body-m">
+                This statement only applies to the Find Transport Data service, available at <a href="https://findtransportdata.dft.gov.uk">https://findtransportdata.dft.gov.uk</a>.
+            </p>
+
+            <h2 class="govuk-heading-m" id="using-this-service">
+                Using this service
+            </h2>
+            <p class="govuk-body-m">
+                This website is run by the Department for Transport. We want as many people as possible to be able to use this website. For example, that means you should be able to:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>change colours, contrast levels and fonts</li>
+                <li>zoom in up to 300% without the text spilling off the screen</li>
+                <li>get from the start of the service to the end using just a keyboard</li>
+                <li>get from the start of the service to the end using speech recognition software</li>
+                <li>listen to most of the website using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)</li>
+            </ul>
+            <p class="govuk-body-m">
+                We&apos;ve also made the text in the service as simple as possible to understand.
+            </p>
+            <p class="govuk-body-m">
+                <a href="https://mcmw.abilitynet.org.uk/">AbilityNet</a> has advice on making your device easier to use if you have a disability.
+            </p>
+
+            <h2 class="govuk-heading-m" id="how-accessible-this-website-is">How accessible this website is</h2>
+            <p class="govuk-body-m">
+                We know some parts of this website are not fully accessible:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>the website has no control over the accessibility of files linked to in the metadata entries created by users of the service, for example: PDF documents may not be fully accessible to screen reader software</li>
+            </ul>
+
+            <h2 class="govuk-heading-m" id="feedback-and-contact-information">Feedback and contact information</h2>
+            <p class="govuk-body-m">
+                If you need information on this website in a different format like accessible PDF, large print, easy read, audio recording or braille:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>email <a href="mailto:findtransportdata@dft.gov.uk">findtransportdata@dft.gov.uk</a></li>
+            </ul>
+            <p class="govuk-body-m">
+                As part of providing this service, we may need to send you messages or documents. We&apos;ll ask you how you would like to receive them.
+            </p>
+            <p class="govuk-body-m">
+                We&apos;ll consider your request and get back to you in 5 working days.
+            </p>
+
+            <h2 class="govuk-heading-m" id="reporting-accessibility-problems-with-this-website">Reporting accessibility problems with this website</h2>
+            <p class="govuk-body-m">
+                We&apos;re always looking to improve the accessibility of this service. If you find any problems that are not listed on this page or think we&apos;re not meeting accessibility requirements, contact:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>email <a href="mailto:findtransportdata@dft.gov.uk">findtransportdata@dft.gov.uk</a>
+                </li>
+            </ul>
+
+            <h2 class="govuk-heading-m" id="enforcement-procedure">Enforcement procedure</h2>
+            <p class="govuk-body-m">
+                The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the &apos;accessibility regulations&apos;). If you&apos;re not happy with how we respond to your complaint, <a href="https://www.equalityadvisoryservice.com/">contact the Equality Advisory and Support Service (EASS)</a>.
+            </p>
+
+            <h2 class="govuk-heading-m" id="contacting-us-by-phone-or-visiting-us-in-person">Contacting us by phone or visiting us in person</h2>
+            <p class="govuk-body-m">
+                We provide a text relay service for people who are deaf, hearing impaired or have a speech impediment.
+            </p>
+            <p class="govuk-body-m">
+                Our offices have audio induction loops, or if you contact us before your visit we can arrange a British Sign Language (BSL) interpreter to help you complete the service in person.
+            </p>
+            <p class="govuk-body-m">
+                For more information, contact: <a href="mailto:findtransportdata@dft.gov.uk">findtransportdata@dft.gov.uk</a>.
+            </p>
+
+            <h2 class="govuk-heading-m" id="technical-information-about-this-services-accessibility">Technical information about this service&apos;s accessibility</h2>
+            <p class="govuk-body-m">
+                The Department for Transport is committed to making this service accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
+            </p>
+
+            <h2 class="govuk-heading-m" id="compliance-status">Compliance status</h2>
+            <p class="govuk-body-m">
+                This service is fully compliant with the <a href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.1 AAA standard</a>.
+            </p>
+
+            <h2 class="govuk-heading-m" id="what-were-doing-to-improve-accessibility">What we&apos;re doing to improve accessibility</h2>
+            <p class="govuk-body-m">
+                We have annual accessibility testing carried out against the Find Transport Data service. In addition to this, we carry out testing before new features are released.
+            </p>
+
+            <h2 class="govuk-heading-m" id="preparation-of-this-accessibility-statement">Preparation of this accessibility statement</h2>
+            <p class="govuk-body-m">
+                This statement was prepared on 8 August 2022. It was last reviewed on 17 September 2022.
+            </p>
+            <p class="govuk-body-m">
+                This website was last tested on 16 August 2022. The test was carried out by the Digital Accessibility Centre.
+            </p>
+        </div>
+    </div>
+{% endblock %}
