@@ -1,0 +1,53 @@
+{% set error_data_author = {text: error_summary['author'],visuallyHiddenText:true} if 'author' in error_summary else null%}
+
+{% call govukFieldset({
+    attributes:{ id:"contact-details"},
+ legend: {
+    id:"contact-details",
+        text: "Contact details",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+    }
+}) %}
+<div id="field-contact-hint" class="govuk-hint">
+If you would like people to get in contact with you about your dataset, please provide the contact details of the person in charge of your dataset.
+</div>
+
+{% set label_html%}
+<h3 class="govuk-heading-s"> Contact name 
+    <span {% if form_data.data_available == "no" %} style="visibility: hidden" {% endif %} >
+        (optional) </span>
+</h3>
+{% endset%}
+{{ govukInput({
+  id:"field-author",
+  value:form_data.author,
+  name:"author",
+  errorMessage:error_data_author,
+ 
+   label: {
+    html: label_html,
+    isPageHeading: true
+  }
+}) }}
+
+{% set error_data_author_email = {text: error_summary['author_email'],visuallyHiddenText:true} if 'author_email' in error_summary else null%}
+{% set label_html%}
+<h3 class="govuk-heading-s"> Contact email 
+    <span {% if form_data.data_available == "no" %} style="visibility: hidden" {% endif %} >
+        (optional) </span>
+</h3>
+{% endset%}
+
+{{ govukInput({
+  label: {
+    html: label_html,
+    isPageHeading: true
+  },
+  id:"field-author-email",
+  value:form_data.author_email,
+  name:"author_email",
+  errorMessage:error_data_author_email
+}) }}
+
+{% endcall %}

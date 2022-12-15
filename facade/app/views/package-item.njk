@@ -1,0 +1,149 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+                    {# package-item #}
+                    {% set truncate = truncate or 180 %}
+                    {% set truncate_title = truncate_title or 80 %}
+                    {% set package_title = package.title or package.name %}
+                    {% set package_name = package.name %}
+
+                    {% set summary_list = [] %}
+                    {% for key, value in package %}
+
+                        {# Dataset private #}
+                        {% if key == "data_available" and value == "no" %}
+                            {% set summary_list = (summary_list.push({
+                                key: {
+                                    text: "Availability:"
+                                },
+                                value: {
+                                    text: "Not released"
+                                }
+                            }), summary_list) %}
+                            {% endif%}
+
+                            {# Dataset locations #}
+                            {% if key == "locations" %}
+                                {% set locationsTag %}
+                                {% for location in package.locations %}
+                                 {{ govukTag({
+                                        text: location
+                                 }) }}
+                                {% endfor %}
+                                {% endset %}
+                                {% set summary_list = (summary_list.push({
+                                    key: {
+                                        classes: "govuk-!-padding-0",
+                                        text: "Locations:"
+                                    },
+                                    value: {
+                                        classes: "govuk-!-padding-0",
+                                        html: locationsTag
+                                    }
+                                }), summary_list) %}
+                                {% endif%}
+
+                                {# Dataset regions #}
+                                {% if key == "regions" %}
+                                    {% set regionsTag %}
+                                    {% for region in package.regions %}
+                                     {{ govukTag({
+                                        text: region
+                                    }) }}
+                                    {% endfor %}
+                                    {% endset %}
+                                    {% set summary_list = (summary_list.push({
+                                        key: {
+                                            classes: "govuk-!-padding-0",
+                                            text: "Regions:"
+                                        },
+                                        value: {
+                                            classes: "govuk-!-padding-0",
+                                            html: regionsTag
+                                        }
+                                    }), summary_list) %}
+                                    {% endif%}
+
+                                    {# Dataset time period #}
+                                    {% if key == "time_period" %}
+                                        {% set summary_list = (summary_list.push({
+                                            key: {
+                                                classes: "govuk-!-padding-0",
+                                                text: "Time period:"
+                                            },
+                                            value: {
+                                                classes: "govuk-!-padding-0",
+                                                text: value
+                                            }
+                                        }), summary_list) %}
+                                        {% endif%}
+
+                                        {# Dataset update_frequency #}
+                                        {% if key == "update_frequency" %}
+                                            {% set summary_list = (summary_list.push({
+                                                key: {
+                                                    classes: "govuk-!-padding-0",
+                                                    text: "Update frequency:"
+                                                },
+                                                value: {
+                                                    classes: "govuk-!-padding-0",
+                                                    text: value
+                                                }
+                                            }), summary_list) %}
+                                            {% endif%}
+
+                                            {# Dataset organization #}
+                                            {% if key == "organization" %}
+                                                {% set summary_list = (summary_list.push({
+                                                    key: {
+                                                        classes: "govuk-!-padding-0",
+                                                        text: "Organisation:"
+                                                    },
+                                                    value: {
+                                                        classes: "govuk-!-padding-0",
+                                                        text: value.title
+                                                    }
+                                                }), summary_list) %}
+                                                {% endif%}
+
+                                            {% endfor %}
+
+                                            <div class="govuk-grid-row">
+                                                <div class="govuk-grid-column-full">
+                                                    <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+                                                        {% if package.private %}
+                                                            <span class="dataset-private label label-inverse">
+                                                                <i class="fa fa-lock"></i>
+                                                                Private
+                                                            </span>
+                                                        {% endif %}
+                                                        <a href="/dataset/{{package_name}}" class="govuk-link govuk-link--no-visited-state">{{package_title}}</a>
+
+                                                    </h3>
+                                                    {{ govukSummaryList({
+                                                            classes: 'govuk-summary-list--no-border',
+                                                            rows: summary_list
+                                                        }) }}
+
+                                                    {# Dataset licence #}
+                                                    <ul class="govuk-list">
+                                                        {% if package.licence.type != "" and package.licence.type is defined %}
+                                                             <li class="govuk-!-display-inline">
+                                                                {{ govukTag({
+                                                                text: package.licence.type
+                                                                }) }}
+                                                            </li>
+                                                        {% endif %}
+                                                        {% if package.topics %}
+                                                            {% for topic in package.topics %}
+                                                                <li class="govuk-!-display-inline">
+                                                                    {{ govukTag({
+                                                                        text: topic
+                                                                    }) }}
+                                                                </li>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            {# package-item finish #}

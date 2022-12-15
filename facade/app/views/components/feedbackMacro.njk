@@ -1,0 +1,14 @@
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% macro extendedFeedback(params) %}
+  {% set organisationHtml %}
+      This is a new service – your <a class="govuk-link" href="{{params.feedbacklink}}">feedback</a> will help us to improve it.
+    {% endset %}
+
+  {% set text =  params.text if params.text else "beta"%}
+  {{ govukPhaseBanner({
+    tag: {
+      text: text
+    },
+    html:organisationHtml
+  }) }}
+{% endmacro %}

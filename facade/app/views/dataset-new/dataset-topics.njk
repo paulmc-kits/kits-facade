@@ -1,0 +1,103 @@
+{% call govukFieldset({
+    attributes:{
+        id:"categorised"
+    },
+    legend: {
+        id:"categorised",
+        text: "How is your dataset categorised?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+    }
+}) %}
+
+<label class="govuk-label" for="field-topics">
+    <h3 class="govuk-heading-s">
+      What topics best describe this dataset?
+    </h3>
+</label>
+
+{% set error_data_topics = {text: error_summary['topics'],visuallyHiddenText:true} if 'topics' in error_summary else null%}
+{% set topics_item = [] %}
+{% for topic in topic_tags %}
+    {% set label_class = {classes:"ftd-margin-bottom-12"} %}
+    {% set topics_item = (topics_item.push({value: topic, text: topic, label: label_class}), topics_item) %}
+{% endfor %}
+{{ govukCheckboxes({
+    idPrefix:"field-topics",
+    name:"topics",
+    classes:"govuk-!-margin-bottom-4  ftd-grid-2-columns",
+    errorMessage:error_data_topics,
+    values:form_data.topics,
+    hint: {
+        text: 'Select at least one topic that this dataset relates to. Use the search box to help filter the list, if you cannot find a matching topic, select "Other" '
+    },
+    items: topics_item
+}) }}
+
+{% endcall %}
+
+{# Tag transport modes #}
+{% call govukFieldset({
+    legend: {
+        text: "Does this dataset relate to a specific transport mode? (optional)",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--s"
+    }
+}) %}
+
+{% set transport_modes_tag = [] %}
+{% for transport in transport_mode_tags %}
+    {% set label_class = {classes:"ftd-margin-bottom-12"} %}
+    {% set transport_modes_tag = (transport_modes_tag.push({
+        id: "transport_" + transport | replace(" ", "_") | lower,
+        value: transport,
+        text: transport,
+        label: label_class
+    }), transport_modes_tag) %}
+{% endfor %}
+
+{{ govukCheckboxes({
+    idPrefix:"field-transport-modes",
+    name:"transport_modes",
+    classes:"govuk-!-margin-bottom-4 ",
+    values:form_data.transport_modes,
+    hint: {
+        text: "Select any transport modes that this dataset specifically relates to. Use the search box to help filter the list, if you cannot find a correct transport mode select “Other”."
+    },
+    items: transport_modes_tag
+}) }}
+
+{% endcall %}
+
+{# Tag road modes #}
+{% call govukFieldset({
+    name:"road_networks",
+    legend: {
+        text: "Does this dataset relate to a specific road network? (optional)",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--s"
+    }
+}) %}
+
+{% set road_network_tag_list = [] %}
+{% for road in road_network_tags %}
+    {% set label_class = {classes:"ftd-margin-bottom-12"} %}
+    {% set road_network_tag_list = (road_network_tag_list.push({
+        id: "road_" + road | replace(" ", "_") | lower,
+        value: road,
+        text: road,
+        label: label_class
+    }), road_network_tag_list) %}
+{% endfor %}
+
+{{ govukCheckboxes({
+    idPrefix:"field-road-networks",
+    name:"road_networks",
+    values:form_data.road_networks,
+    hint: {
+        text: "Select any road networks that this dataset specifically relates to. Use the search box to help filter the list, if you cannot find a correct transport mode select “Other”."
+    },
+    items: road_network_tag_list
+}) }}
+
+{% endcall %}

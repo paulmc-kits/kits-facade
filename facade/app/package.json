@@ -1,7 +1,8 @@
 {
     "scripts": {
         "build:sass": "sass sass/main.scss public/css/main.css --load-path=./ --no-source-map --style=compressed",
-        "start": "node server.js",
+        "build:server": "webpack",
+        "start": "node dist/final.js",
         "start:development": "npm run build:sass && npm run start:watch",
         "start:watch": "webpack --watch",
         "start:watch:progress": "webpack --watch --progress"
@@ -11,9 +12,13 @@
         "express": "4.18.1",
         "express-pino-logger": "7.0.0",
         "govuk-frontend": "4.3.1",
+        "jsonwebtoken":"8.5.1",
         "luxon": "^3.0.4",
         "marked": "4.1.1",
+        "node-passlib": "^1.1.0",
         "nunjucks": "3.2.3",
+        "passport": "0.6.0",
+        "passport-jwt":"^4.0.0",
         "pino": "8.6.0",
         "pino-pretty": "9.1.0",
         "sass": "1.54.9",

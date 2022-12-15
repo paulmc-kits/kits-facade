@@ -8,6 +8,7 @@ const uuid = require('uuid')
 const routes = require('./routes')
 
 const logger = require('./lib/logger')
+const auth = require('./middleware/auth')
 
 const app = express()
 
@@ -21,6 +22,9 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+
+// passport auth
+app.use(auth.initialize())
 
 // Deal with static files in the public folder
 app.use('/assets', express.static('public'))
@@ -46,7 +50,7 @@ app.use('/', routes)
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
   // TODO: Sort out error pages
-  res.status(404).send('404')
+  res.status(404).redirect('/404')
   logger.error(new Error('404'))
   next()
 })
@@ -63,7 +67,7 @@ app.use((err, req, res, next) => {
   // Render the error page
   res.status(err.status || 500)
   // res.render('error')
-  res.send('ERROR!!!!')
+  res.redirect('/404')
 })
 
 module.exports = app

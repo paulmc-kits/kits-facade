@@ -1,0 +1,307 @@
+{# Regular updated #}
+{% set data_available_regularly_updated_yes %}
+
+{# Frequencies #}
+{% set error_data_update_frequency = {text: error_summary['update_frequency'],visuallyHiddenText:true} if 'update_frequency' in error_summary else null%}
+
+{% set regular_updated_frequency_options = [
+    {
+        value: "",
+        text: "Select the update frequency"
+    }
+] %}
+
+{% for frequency in frequencies %}
+    {% set regular_updated_frequency_options = (regular_updated_frequency_options.push({
+        value: frequency.value,
+        text: frequency.name,
+        selected: true if (frequency.value == form_data.update_frequency) 
+        }
+    ), regular_updated_frequency_options) %}
+{% endfor %}
+
+{# update frequency Select options finish #}
+{{ govukSelect({
+        label: {
+        text: "How often is this dataset updated?",
+        isPageHeading: true
+        },
+        id: "field-update-frequency",
+        name: "update_frequency",
+        errorMessage: error_data_update_frequency,
+        items: regular_updated_frequency_options
+}) }}
+
+{# Earliest data #}
+{% set error_date_range_earliest_start_date = {text: error_summary['start_date'],visuallyHiddenText:true} if 'start_date' in error_summary else null%}
+
+{{ govukDateInput({
+    id:"field-start-date",
+    errorMessage:error_date_range_earliest_start_date,
+    fieldset: {
+    legend: {
+    text: "What is the earliest date this dataset covers (optional)",
+    isPageHeading: true
+    }
+    },
+    hint: {
+    text: "For example, 19 01 2011"
+    },
+    items: [
+        {
+            id:"regularly-updated-earliest-day",
+            label:"Day",
+            classes: "govuk-input--width-2",
+            name:"regularly_updated_earliest_day", 
+            pattern:"[0-9]*", 
+            attributes:{
+            inputmode:"numeric"
+            },
+            value:form_data.regularly_updated_earliest_day
+        },
+        {
+            id:"regularly-updated-earliest-month" ,
+            label:"Month",
+            classes: "govuk-input--width-2",
+            name:"regularly_updated_earliest_month", 
+            pattern:"[0-9]*", 
+            attributes:{
+            inputmode:"numeric"
+            },
+            value:form_data.regularly_updated_earliest_month
+        },
+        {
+            id:"regularly-updated-earliest-year" ,
+            label:"Year",
+            classes: "govuk-input--width-4",
+            name:"regularly_updated_earliest_year", 
+            pattern:"[0-9]*", 
+            attributes:{
+            inputmode:"numeric"
+            },
+            value:form_data.regularly_updated_earliest_year
+        }
+    ]
+}) }}
+
+{% endset %}
+{# Regular update finishes #}
+
+{# regularly-updated-2 conditonal options  #}
+{% set data_available_regularly_updated_no_conditional %}
+{% set error_date_range_earliest %}
+{% if 'date_range_earliest' in error_summary%}
+    {{ govukErrorMessage({
+        id:"field-date-range-earliest-error",
+        text: error_summary['date_range_earliest'],
+        visuallyHiddenText: "Error:"
+    }) }}
+{% endif %}
+{% if 'date_range_earliest_day' in error_summary%}
+    {{ govukErrorMessage({
+        id:"field-date-range-earliest-day-error",
+        text: error_summary['date_range_earliest_day'],
+        visuallyHiddenText: "Error:"
+    }) }}
+{% endif %}
+{% if 'date_range_earliest_month' in error_summary%}
+    {{ govukErrorMessage({
+        id:"field-date-range-earliest-month-error",
+        text: error_summary['date_range_earliest_month'],
+        visuallyHiddenText: "Error:"
+    }) }}
+{% endif %}
+{% if 'date_range_earliest_year' in error_summary%}
+    {{ govukErrorMessage({
+        id:"field-date-range-earliest-year-error",
+        text: error_summary['date_range_earliest_year'],
+        visuallyHiddenText: "Error:"
+    }) }}
+{% endif %}
+{% endset %}
+{% set error_date_range_earliest_day = 'govuk-input--error' if 'date_range_earliest_day' in error_summary else ''%}
+{% set error_date_range_earliest_month = 'govuk-input--error' if 'date_range_earliest_month' in error_summary else '' %}
+{% set error_date_range_earliest_year = 'govuk-input--error' if 'date_range_earliest_year' in error_summary else '' %}
+
+{{ govukDateInput({
+    errorMessage:{
+    html: error_date_range_earliest,
+    visuallyHiddenText: true
+} if (error_summary['date_range_earliest'] or error_summary['date_range_earliest_day'] or error_summary['date_range_earliest_month']  or error_summary['date_range_earliest_year']) else null,
+                    fieldset: {
+                        legend: {
+                        text: "What is the earliest date this dataset covers ",
+                        isPageHeading: true
+                        }
+                    },
+                    hint: {
+                        text: "For example if the dataset covers 19/01/2011 - 19/08/2011, enter 19 01 2011"
+                    },
+                    items: [
+                        {
+                            id:"date-range-earliest-day",
+                            label:"Day",
+                            classes: "govuk-input--width-2 " +  error_date_range_earliest_day ,
+                            name:"date_range_earliest_day", 
+                            pattern:"[0-9]*", 
+                            attributes:{
+                            inputmode:"numeric"
+                            },
+                            value:form_data.date_range_earliest_day
+                        },
+                        {
+                            id:"date-range-earliest-month" ,
+                            label:"Month",
+                            classes: "govuk-input--width-2 " + error_date_range_earliest_month,
+                            name:"date_range_earliest_month", 
+                            pattern:"[0-9]*", 
+                            attributes:{
+                            inputmode:"numeric"
+                            },
+                            value:form_data.date_range_earliest_month
+                        },
+                        {
+                            id:"date-range-earliest-year" ,
+                            label:"Year",
+                            classes: "govuk-input--width-4 " +  error_date_range_earliest_year ,
+                            name:"date_range_earliest_year", 
+                            pattern:"[0-9]*", 
+                            attributes:{
+                            inputmode:"numeric"
+                            },
+                            value:form_data.date_range_earliest_year
+                        }
+                    ]
+                }) }}
+
+{% set error_date_range_latest %}
+{% if 'date_range_latest' in error_summary%}
+    {{ govukErrorMessage({
+        id:"date-range-latest-error",
+        text: error_summary['date_range_latest'],
+        visuallyHiddenText: "Error:"
+    }) }}
+{% endif %}
+{% if 'date_range_latest_day' in error_summary%}
+    {{ govukErrorMessage({
+        id:"field-date-range-latest-day-error",
+        text: error_summary['date_range_latest_day'],
+        visuallyHiddenText: "Error:"
+    }) }}
+{% endif %}
+{% if 'date_range_latest_month' in error_summary%}
+    {{ govukErrorMessage({
+        id:"field-date-range-latest-month-error",
+        text: error_summary['date_range_latest_month'],
+        visuallyHiddenText: "Error:"
+    }) }}
+{% endif %}
+{% if 'date_range_latest_year' in error_summary%}
+    {{ govukErrorMessage({
+        id:"field-date-range-latest-year-error",
+        text: error_summary['date_range_latest_year'],
+        visuallyHiddenText: "Error:"
+    }) }}
+{% endif %}
+{% endset %}
+
+{% set error_date_range_latest_day = "govuk-input--error" if 'date_range_latest_day' in error_summary else ''%}
+{% set error_date_range_latest_month = "govuk-input--error" if 'date_range_latest_month' in error_summary else ''%}
+{% set error_date_range_latest_year = "govuk-input--error" if 'date_range_latest_year' in error_summary else ''%}
+
+{{ govukDateInput({
+    errorMessage:{html: error_date_range_latest,visuallyHiddenText:true} if(error_summary['date_range_latest'] or error_summary['date_range_latest_day'] or error_summary['date_range_latest_month'] or  error_summary['date_range_latest_year']) else null,
+                    fieldset: {
+                        legend: {
+                        text: "What is the latest date this dataset covers",
+                        isPageHeading: true
+                        }
+                    },
+                    hint: {
+                        text: "For example if the dataset covers 19/01/2011 - 19/08/2011, enter 19 08 2011"
+                    },
+                    items: [
+                        {
+                            id:"date-range-latest-day",
+                            label:"Day",
+                            classes: "govuk-input--width-2 " + error_date_range_latest_day,
+                            name:"date_range_latest_day", 
+                            pattern:"[0-9]*", 
+                            attributes:{
+                            inputmode:"numeric"
+                            },
+                            value:form_data.date_range_latest_day
+                        },
+                        {
+                            id:"date-range-latest-month" ,
+                            label:"Month",
+                            classes: "govuk-input--width-2 " + error_date_range_latest_month,
+                            name:"date_range_latest_month", 
+                            pattern:"[0-9]*", 
+                            attributes:{
+                            inputmode:"numeric"
+                            },
+                            value:form_data.date_range_latest_month
+                        },
+                        {
+                            id:"date-range-latest-year" ,
+                            label:"Year",
+                            classes: "govuk-input--width-4 " + error_date_range_latest_year,
+                            name:"date_range_latest_year", 
+                            pattern:"[0-9]*", 
+                            attributes:{
+                            inputmode:"numeric"
+                            },
+                            value:form_data.date_range_latest_year
+                        }
+                    ]
+                }) }}
+{% endset %}
+{# regularly-updated-2 conditonal options finishes  #}
+
+{# Regular update main  #}
+<div class="govuk-form-group">
+    {% call govukFieldset({
+        attributes:{
+            id:"what-time-period"
+        },
+        legend: {
+            classes:"govuk-fieldset__legend--l",
+            text: "What time period does your dataset cover?"
+        }
+    }) %}
+
+    <h3 class="govuk-heading-s">
+        Is this dataset updated regularly?
+    </h3>
+
+    {% set error_data_regularly_updated = {text: error_summary['regularly_updated'],visuallyHiddenText:true} if 'regularly_updated' in error_summary else null%}
+
+    {{ govukRadios({
+        idPrefix: "field-regularly-updated",
+                    name:"regularly_updated",
+                    classes:"govuk-radios--conditional",
+                    errorMessage : error_data_regularly_updated,
+                    items: [
+                        {
+                            id:"regularly-updated", 
+                            text:"My dataset is live or regularly updated",
+                            value:"yes",
+                            checked: "true" if (form_data.regularly_updated == "yes") else false,
+                            conditional:{
+                                html:  data_available_regularly_updated_yes
+                            }
+                        },
+                         {
+                            id:"regularly-updated-2", 
+                            text:"This data covers a specific time period and has an end date",
+                            value:"no",
+                            checked: "true" if (form_data.regularly_updated == "no") else false,
+                            conditional:{
+                                html:  data_available_regularly_updated_no_conditional
+                            }
+                        }
+                    ]
+    }) }}
+    {% endcall %}
+</div>

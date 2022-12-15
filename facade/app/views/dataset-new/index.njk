@@ -1,0 +1,304 @@
+{% extends "layouts/layout-govuk.njk" %}
+
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/hint/macro.njk" import govukHint %}
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{%- from "components/select/macro.njk" import extendedGovukSelect -%}
+
+{% block pageScripts %}
+    {% include "includes/dataset-new-scripts/contact-detail.njk" %}
+{% endblock %}
+
+{# @TODO In page header instead of "Sign in" after authorisation it should be "Create metadata entry"  #}
+{% block content %}
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Create a metadata entry so people can find your dataset</h1>
+    <div class="govuk-grid-row govuk-body govuk-!-margin-top-9">
+        {# Side List #}
+        <div class="govuk-grid-column-one-third govuk-body govuk-!-margin-bottom-9 ftd-sticky">
+            <ul class="govuk-list">
+                <li class="govuk-!-margin-bottom-4">
+                    <a class="govuk-link" href="#about">About your dataset</a>
+                </li>
+                <li class="govuk-!-margin-bottom-4">
+                    <a class="govuk-link" href="#what-data-is-included">What data is included in your dataset?</a>
+                </li>
+                <li class="govuk-!-margin-bottom-4">
+                    <a class="govuk-link" href="#what-time-period">What time period does your dataset cover?</a>
+                </li>
+                <li class="govuk-!-margin-bottom-4">
+                    <a class="govuk-link" href="#location">What location was your dataset collected in?</a>
+                </li>
+                <li class="govuk-!-margin-bottom-4">
+                    <a class="govuk-link" href="#categorised">How is your dataset categorised?</a>
+                </li>
+                <li class="govuk-!-margin-bottom-4">
+                    <a class="govuk-link" href="#additional-information">Additional information</a>
+                </li>
+                <li>
+                    <a class="govuk-link" href="#contact-details">Contact details</a>
+                </li>
+            </ul>
+        </div>
+        {# Side List finish #}
+
+        <div class="govuk-grid-column-two-thirds">
+            {# @TODO if error push error to data layer #}
+            {% if error_summary | length %}
+                <div class="govuk-form-group govuk-form-group--error">
+                {% else %}
+                    <div class="govuk-form-group">
+                    {% endif %}
+                    <form action="/dataset/new" method="post">
+                        {# set empy pkg name #}
+                        {{ govukInput({
+                   formGroup:{
+                    classes:"govuk-!-margin-bottom-0"
+                   },
+                   type:"hidden", 
+                   name:"pkg_name", 
+                   value:""
+                }) }}
+                        {{ govukInput({
+                     formGroup:{
+                    classes:"govuk-!-margin-bottom-0"
+                   },
+                    name:"save",
+                    type:"hidden",
+                    value:"go-metadata"
+                }) }}
+
+                        {# Make all datasets public by default #}
+                        {{ govukInput({
+                     formGroup:{
+                    classes:"govuk-!-margin-bottom-0"
+                   },
+                    id:"field-private" ,
+                    name:"private" ,
+                    type:"hidden",
+                    value:"False" 
+                }) }}
+
+                        {# This is the dataset link url! it is set from the title! #}
+                        {{ govukInput({
+                     formGroup:{
+                    classes:"govuk-!-margin-bottom-0"
+                   },
+                    id:"field-name", 
+                    name:"name" ,
+                    type:"hidden",
+                    value:""
+                }) }}
+                        {{ govukInput({
+                    formGroup:{
+                    classes:"govuk-!-margin-bottom-0"
+                   },
+                    id:"field-start-date", 
+                    name:"start_date" ,
+                    type:"hidden",
+                    value:"" 
+                }) }}
+                        {{ govukInput({
+                     formGroup:{
+                    classes:"govuk-!-margin-bottom-0"
+                   },
+                    id:"field-end-date", 
+                    name:"end_date" ,
+                    type:"hidden",
+                    value:"" 
+                }) }}
+                        {#  govuk errors  #}
+                        {% if error_summary | length %}
+                            {# @TODO add error summary list #}
+                            {% set error_list = [] %}
+                            {% for key, value in error_summary%}
+                                {% set error_href = ['#field-',key | lower | replace('_','-'),'-error'] | join %}
+                                {% set error_list = (error_list.push({text: value, href: error_href}), error_list) %}
+                            {% endfor %}
+
+                            {{ govukErrorSummary({
+                            titleText: "There is a problem",
+                            attributes:{
+                                'aria-labelledby':"error-summary-title",
+                                 role:"alert",
+                                 tabindex:"-1",
+                                 'data-module':"govuk-error-summary"
+                            },
+                            errorList: error_list
+                            }) }}
+                        {% endif %}
+                        {# govuk errors finishes #}
+
+                        {% call govukFieldset({
+                    classes: "govuk-!-margin-bottom-6 ",
+                    attributes:{
+                        id:"about"
+                    },
+                    legend: {
+                        classes:"govuk-fieldset__legend--l",
+                        text: "About your dataset"
+                    }
+                }) %}
+
+                        {# Organization #}
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="field-owner-org">
+                                <h3 class="govuk-heading-s"> Organisation </h3>
+                            </label>
+
+                            {# @TODO organizations_available = list of organization that the current user has #}
+                            {% set error_text = {text: error_summary['owner_org'],visuallyHiddenText:true} if 'owner_org' in error_summary else null%}
+                            {# Organization Select options #}
+                            {% set organisation_options = [{value: "", text: "Select a publisher"}] %}
+                            {% for organization in organizations_available %}
+                                {% set organisation_options = (organisation_options.push({
+                                    value: organization.id,
+                                    text: organization.display_name,
+                                    selected: true if (organization.id == form_data.owner_org) 
+                                    }
+                                ), organisation_options) %}
+                            {% endfor %}
+                            {# Organization Select options finish #}
+                            {% if organizations_available %}
+                                {{ extendedGovukSelect({
+                        id: "field-owner-org",
+                        name: "owner_org",
+                        errorMessage: error_text,
+                        options: [{items:organisation_options}]
+                    }) }}
+                            {% else %}
+                                <p class="govuk-body">{{ organizations_available[0]['display_name']}}</p>
+                                {{ govukInput({
+                        id:"field-owner-org", 
+                        name:"owner_org", 
+                        type:"hidden",
+                        value: organizations_available[0]['id']
+                    }) }}
+                            {% endif %}
+                        </div>
+                        {# Organization finish #}
+
+                        {# Data publish online ? #}
+                        {% set error_data_available = {text: error_summary['data_available'],visuallyHiddenText:true} if 'data_available' in error_summary else null%}
+                        {% set error_data_available_website_link = {text: error_summary['url'],visuallyHiddenText:true} if 'url' in error_summary else null%}
+
+                        {% set data_available_if_yes_conditional_item_html %}
+                        {{ govukInput({
+                        label: {
+                            text: "Website link to your dataset",
+                            isPageHeading: true
+                        },
+                        hint: {
+                            text: "The URL to your dataset or the page that hosts your dataset. Please remember to include http:// or https://"
+                        },
+                        errorMessage: error_data_available_website_link,
+                        id: "field-url",
+                        name: "url",
+                        value:form_data.url
+                }) }}
+                        {% endset %}
+
+                        <div class="govuk-form-group">
+                            {{ govukRadios({
+                                idPrefix:"field-data-available",
+                        fieldset: {
+                            legend: {
+                            text: "Is your data published online?",
+                            classes:"govuk-heading-s govuk-!-font-weight-bold govuk-!-margin-bottom-4"
+                            }
+                        },
+                        name:"data_available",
+                        classes:"govuk-radios--conditional",
+                        errorMessage : error_data_available,
+                    items: [
+                        {
+                            id:"data-available", 
+                            text:"Yes, it can be accessed via a website link",
+                            value:"yes",
+                            attributes:{
+                                'data-aria-controls': "conditional-data-available"
+                            },
+                            checked: true if (form_data.data_available == "yes") else false,
+                            conditional:{
+                                html:  data_available_if_yes_conditional_item_html
+                            }
+                        },
+                        {
+                            id:"data-available-2", 
+                            text:"No, I can provide contact details so people can contact me to access this dataset",
+                            value:"no",
+                            checked: "true" if (form_data.data_available == "no") else false
+                        }
+                    ]
+                    }) }}
+                        </div>
+
+                        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+                        {# Dataset title #}
+                        {% set error_data_name = {text: error_summary['title'],visuallyHiddenText:true} if 'title' in error_summary else null%}
+                        {% call govukFieldset({
+                        attributes:{
+                            id:"what-data-is-included"
+                        },
+                        legend: {
+                            classes:"govuk-fieldset__legend--l",
+                            text: "What data is included in your dataset?"
+                        }
+                    }) %}
+                        {{ govukInput({
+                        hint: {
+                            text: "Describe what is captured in your dataset. For example, “Smart Sensor Traffic Counts” or “Electric Vehicle Charging Points”."
+                        },
+                        errorMessage: error_data_name,
+                        id: "field-title",
+                        name: "title",
+                        value:form_data.title
+                    }) }}
+                        {% endcall %}
+
+                        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+                        {# Regular updated #}
+                        {% include "dataset-new/dataset-time-period.njk"    %}
+
+                        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+                        {# Locations #}
+                        {% include "dataset-new/dataset-locations.njk" %}
+
+                        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+                        {# Topics #}
+                        {% include "dataset-new/dataset-topics.njk" %}
+
+                        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+                        {# Additional information #}
+                        {% include "dataset-new/dataset-additional-info.njk" %}
+
+                        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+                        {# Contact information #}
+                        {% include "dataset-new/dataset-contact.njk" %}
+
+                        {%endcall %}
+                        {{ govukButton({
+                            id:"publish-metadata",
+                            text: "Publish metadata entry",
+                            type:"submit"
+                        }) }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endblock %}

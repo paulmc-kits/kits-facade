@@ -5,9 +5,49 @@
 {% from "govuk/components/header/macro.njk" import govukHeader %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/skip-link/macro.njk" import govukSkipLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set htmlLang = "en" %}
 {% set themeColor = "blue" %}
+
+{% set searchIcon %}
+<svg class="ftd-search__button_icon" width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+  <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+  <line x1="17.8668" y1="17.3587" x2="26.4475" y2="25.9393" stroke="currentColor" stroke-width="3"></line>
+</svg>
+{% endset %}
+
+{% set button %}
+<div class="ftd-search_button_wrapper ftd-inline">
+  {{ govukButton({
+    type:"submit",
+    classes:"govuk-!-margin-bottom-0 ",
+    html: searchIcon
+  }) }}
+</div>
+{% endset %}
+
+{% set searchHtml %}
+<form action="/browse/" method="get">
+  {{ govukInput({
+    formGroup: {
+      classes: "govuk-!-margin-bottom-0 ftd-search_inputs_wrapper ftd-inline"
+    },
+    suffix:{
+        html:button,
+        classes:"govuk-!-padding-0 ftd-border_none"
+    },
+    label: {
+        classes: "govuk-label--l",
+        isPageHeading: true
+    },
+    id: "search-datasets",
+    name: "q",
+    classes:"govuk-!-margin-bottom-0 ftd-border_none"
+  }) }}
+</form>
+{% endset %}
 
 {% block pageTitle %}GOV.UK - Find transport data{% endblock %}
 
@@ -71,11 +111,11 @@
       },
       {
         href: "/login",
-        text: "Sign in"
+        text: "Sign in" 
       },
       {
         href: "#",
-        text: "[search box]"
+        html: searchHtml
       }
     ]
   }) }}
@@ -86,12 +126,17 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {{ govukPhaseBanner({
+  {% block feedback_url %}
+    {% set organisationHtml %}
+      This is a new service – your <a class="govuk-link" href="{{feedbackUrls['beta']}}">feedback</a> will help us to improve it.
+    {% endset %}
+    {{ govukPhaseBanner({
     tag: {
       text: "beta"
     },
-    html: 'This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+    html:organisationHtml
   }) }}
+  {% endblock %}
   {# {{ govukBackLink({
     href: "#",
     text: "Back"
@@ -99,8 +144,7 @@
   {% block breadcrumbs %}{% endblock %}
 {% endblock %}
 
-{% block content %}
-{% endblock %}
+{% block content %}{% endblock %}
 
 {% block footer %}
   {% include "components/footer.njk" %}

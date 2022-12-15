@@ -1,0 +1,50 @@
+.ftd-footer {
+    background-color: $govuk-canvas-background-colour;
+    border-top: 10px solid $govuk-brand-colour;
+}
+
+.ftd-footer_feedback_container {
+    margin-top: 60px;
+    border-bottom: 1px solid $govuk-body-background-colour;
+    background-color: $govuk-brand-colour;
+}
+
+.ftd-feedback_footer_buttons {
+    padding: 25px 25px 25px 25px;
+}
+
+.ftd-feedback_label {
+    line-height: 2.0;
+    color: $govuk-body-background-colour;
+    margin: 10px 20px;
+}
+
+.ftd-feedback_button_group {
+    margin:0
+}
+
+.ftd-feedback_button {
+    border: 1px $govuk-body-background-colour solid;
+    background-color: transparent;
+    border-bottom: 1px solid $govuk-body-background-colour;
+    min-width: 100px;
+    margin-bottom: 0px !important;
+    box-shadow: 0 2px 0 $govuk-body-background-colour;
+}
+
+.ftd-feedback_button:hover {
+    background: rgba(11,12,12,0.2);
+}
+
+.ftd-feedback_link {
+    float: right;
+}
+
+.ftd-feedback_message {
+    color: $govuk-body-background-colour;
+    margin-bottom: 0;
+}
+
+.ftd-feedback_hidden {
+    display: none;
+}

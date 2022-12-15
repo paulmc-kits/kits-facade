@@ -1,0 +1,30 @@
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% extends "layouts/layout-govuk.njk" %}
+
+{% set title = "Signed out" %}
+{% block pageTitle %}{{title}} - {{ super() }}
+{% endblock %}
+
+{# START: breadcrumbs #}
+{% block breadcrumbs %}
+    {{ govukBreadcrumbs({
+    items: [
+        {
+        text: "Home",
+        href: "/"
+        },
+        {
+        text: "Signed out"
+        }
+    ]
+    }) }}
+{% endblock %}
+{# END: breadcrumbs #}
+
+
+{% block content %}
+            <h1 class="govuk-heading-xl">Signed out</h1>
+            <p class="govuk-body">You have successfully signed out.</p>
+{% endblock %}
+

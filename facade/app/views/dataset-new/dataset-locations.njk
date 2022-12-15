@@ -1,0 +1,66 @@
+{% call govukFieldset({
+    attributes : {
+        id:"location"
+    },
+ legend: {
+        id:"location",
+        text: "What geographic location does your dataset cover?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+    }
+}) %}
+<label class="govuk-label" for="field-locations">
+  <h3 class="govuk-heading-s">
+      What location best describes this dataset?
+    </h3>
+</label>
+
+{% set error_data_locations = {text: error_summary['locations'],visuallyHiddenText:true} if 'locations' in error_summary else null%}
+
+{% set locations_item = [] %}
+{% for location in location_tags %}
+  {% set label_class = {classes:"ftd-margin-bottom-12"} %}
+  {% set locations_item = (locations_item.push({
+    value: location,
+    text: location,
+    label: label_class,
+    checked: true if(form_data.locations == location) else false
+  }), locations_item) %}
+{% endfor %}
+
+{{ govukRadios({
+  idPrefix:"field-locations",
+  name:"locations",
+  classes:"govuk-!-margin-bottom-4  ftd-grid-2-columns",
+  errorMessage:error_data_locations,
+  hint: {
+    text: "Select a specific location such as a country or region"
+  },
+  items: locations_item
+}) }}
+
+<label class="govuk-label" for="field-regions">
+  <h3 class="govuk-heading-s">
+      What geographic level best describes the lowest level your dataset is available at?
+    </h3>
+</label>
+
+{% set error_data_regions = {text: error_summary['regions'],visuallyHiddenText:true} if 'regions' in error_summary else null%}
+
+{% set regions_item = [] %}
+{% for region in region_tags %}
+  {% set label_class = {classes:"ftd-margin-bottom-12"} %}
+  {% set regions_item = (regions_item.push({value: region, text: region, label: label_class, checked : true if(form_data.regions == region ) else false}), regions_item) %}
+{% endfor %}
+
+{{ govukRadios({
+  idPrefix:"field-regions",
+  name:"regions",
+  classes:"govuk-!-margin-bottom-4  ftd-grid-2-columns",
+  errorMessage:error_data_regions,
+  hint: {
+    text: "Select a specific geographic level"
+  },
+  items: regions_item
+}) }}
+{% endcall %}

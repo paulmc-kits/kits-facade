@@ -28,6 +28,10 @@
     background-color: #207dce;
 }
 
+.ftd-box_shadow_none {
+    box-shadow: none;
+}
+
 .ftd-search__button_icon {
     display: block;
     pointer-events: none;
@@ -36,4 +40,16 @@
     width: 20px;
     top: 10px;
     left: 10px;
+}
+
+.ftd-inline {
+    display: inline;
+}
+
+.ftd-line_height a {
+    line-height: 2.25rem;
+}
+
+.ftd-border_none {
+    border: none;
 }

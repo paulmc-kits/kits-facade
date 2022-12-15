@@ -20,6 +20,10 @@ function getLicenceDetails(licenceID) {
     return licences.find(data => data.value == licenceID)
 }
 
+function getAllLicenceDetails() {
+    return licences
+}
+
 const updateFrequencies = [
     {'name': 'Live', 'value': 'live'},
     {'name': 'Daily', 'value': 'daily'},
@@ -31,11 +35,30 @@ const updateFrequencies = [
     {'name': '6 Monthly', 'value': '6monthly'},
     {'name': 'Yearly', 'value': 'yearly'}
 ]
+
 function getUpdateFrequency(frequency) {
     return updateFrequencies.find(data => data.value == frequency)
 }
 
+function getAllUpdateFrequency() {
+    return updateFrequencies
+}
+
+const sortFields = [
+        {'name': 'Most recent', 'value': 'metadata_modified desc'},
+        {'name': 'Relevance', 'value': 'score desc'},
+        {'name': 'Name Ascending', 'value': 'title_string asc'},
+        {'name': 'Name Descending', 'value': 'title_string desc'}
+]
+
+function getSortFields() {
+    return sortFields
+}
+
 module.exports = {
     getLicenceDetails,
-    getUpdateFrequency
+    getUpdateFrequency,
+    getAllLicenceDetails,
+    getAllUpdateFrequency,
+    getSortFields
 }

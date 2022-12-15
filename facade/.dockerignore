@@ -1,0 +1,4 @@
+# After building, Docker brings back the node_modules folder from the container back to the host, so when rebuilding, ignore this to speed things up
+app/node_modules
+app/dist
+app/public/css/main.css
