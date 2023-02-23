@@ -39,4 +39,4 @@ steps:
 
 substitutions:
     _NAMESPACE: kits-dft-test
-    _CLUSTER: kit-dft-test-cluster
+    _CLUSTER: kits-dft-test-cluster
