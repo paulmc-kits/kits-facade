@@ -32,7 +32,7 @@ steps:
   args:
   - run
   - --filename=/data/
-  - --location=europe-west1
+  - --location=europe-west2
   - --namespace=${_NAMESPACE}
   - --cluster=${_CLUSTER}
   timeout: 600s
