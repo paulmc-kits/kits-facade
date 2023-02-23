@@ -1,0 +1,107 @@
+{% set error_data_notes = {text: error_summary['notes'],visuallyHiddenText:true} if 'notes' in error_summary else null%}
+
+{% call govukFieldset({
+  attributes:{
+    id:"additional-information"
+  },
+ legend: {
+        text: "Additional information",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+    }
+}) %}
+
+{# Data Notes #}
+{{ govukTextarea({
+  name: "notes",
+  id: "field-notes",
+  label: {
+    text: "Summary (optional)",
+      classes: "govuk-heading-s govuk-!-font-weight-bold govuk-!-margin-bottom-4",
+    isPageHeading: true
+  },
+  errorMessage:error_data_notes,
+  hint: {
+    text: "Provide a short summary about your dataset. Explain what it covers, how it can be used and any other important information that a person using your dataset might find helpful."
+  },
+  value:form_data.notes,
+attributes:{
+    rows:"5"
+}
+}) }}
+
+{# Data format #}
+{{ govukInput({
+  label: {
+    text: "What format(s) is this dataset in? (optional)",
+    classes: "govuk-heading-s govuk-!-font-weight-bold govuk-!-margin-bottom-4",
+    isPageHeading: true
+  },
+  id:"field-data-formats",
+  value:form_data.data_formats,
+  name:"data_formats",
+  hint: {
+    text: "List the available format(s) for your dataset. Multiple entries must be separated by commas (for example: csv, xml, json, xls)."
+  }
+}) }}
+
+{# select licence #}
+{% set licences_item = [] %}
+{% set licences_item_2 = [] %}
+
+{% for licence in licences %}
+  {% if licence.type == "Free" %}
+    {% set licences_item = (licences_item.push({value: licence.value, text: licence.name}), licences_item) %}
+  {% else %}
+    {% set licences_item_2 = (licences_item_2.push({value: licence.value, text: licence.name}), licences_item_2) %}
+  {% endif %}
+{% endfor %}
+
+{% set open_licences_group = {label:"Open licences",items:licences_item}%}
+{% set noOpen_licences_group = {label:"Non-open licences",items:licences_item_2}%}
+
+{% set options = [
+  {
+    optGroup: open_licences_group
+  }, {
+    optGroup: noOpen_licences_group
+  }
+] %}
+
+{{ extendedGovukSelect({
+  id: "field-licence-id",
+  name: "license_id",
+  hint:{
+    text:"Select the licence that is needed to access your dataset."
+  },
+  label: {
+    text: "Licence (optional)",
+    classes: "govuk-heading-s govuk-!-font-weight-bold govuk-!-margin-bottom-4",
+    isPageHeading: true
+  },
+  classes:"govuk-!-width-full",
+   initialOption: {
+    value: "",
+    text: "Please select the licence"
+  },
+  value:form_data.license_id,
+  options:options
+}) }}
+
+{{ govukInsetText({
+  html: "Licence definitions and additional information can be found at <a href=\"https://opendefinition.org/licenses/\" rel=\"noreferrer noopener\" target=\"_blank\" class=\"govuk-link\">opendefinition.org opens in a new tab</a>"
+}) }}
+
+{# Version number #}
+{{ govukInput({
+  label: {
+    text: "Version number (optional)",
+    classes: "govuk-heading-s govuk-!-font-weight-bold govuk-!-margin-bottom-4",
+    isPageHeading: true
+  },
+  id:"field-version",
+  value:form_data.version,
+  name:"version"
+}) }}
+
+{% endcall %}

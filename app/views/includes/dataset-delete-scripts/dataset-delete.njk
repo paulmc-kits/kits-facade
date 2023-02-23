@@ -1,0 +1,26 @@
+<script>
+    window.addEventListener("DOMContentLoaded", function () {
+
+    const openConfirmDialogButtons = document.getElementsByName('openDeleteConfirm')
+
+    for(openConfirmDialogButton of openConfirmDialogButtons){
+            const target_id = openConfirmDialogButton.value;
+            openConfirmDialogButton.addEventListener('click', function () {
+                const deleteConfirmContainer = document.getElementById(target_id);
+                deleteConfirmContainer.style.maxHeight = deleteConfirmContainer.scrollHeight + "px";
+                deleteConfirmContainer.style.visibility = "visible";
+            })
+        }
+
+    const closeConfirmDialogButtons = document.getElementsByName('closeDeleteConfirm')
+
+    for(closeConfirmDialogButton of closeConfirmDialogButtons){
+            const close_target_id = closeConfirmDialogButton.value;
+            closeConfirmDialogButton.addEventListener('click', function () {
+                const deleteConfirmContainer = document.getElementById(close_target_id);
+                deleteConfirmContainer.style.maxHeight = null;
+                deleteConfirmContainer.style.visibility = "hidden";
+            })
+        }
+    })
+</script>

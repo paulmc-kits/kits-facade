@@ -1,0 +1,26 @@
+<script>
+    const datasetSortFieldsElement = document.getElementById('sort-input')
+    datasetSortFieldsElement.addEventListener('change', function (event) {
+        this
+            .form
+            .submit()
+    })
+
+    function pageNavigation(page) {
+        const url = window.location.href
+           
+        if (url.includes('page=')) {
+            const urlSplit = url.split('page=')
+            urlSplit[1] = page
+            const newUrl = urlSplit.join('page=')
+            window.location = newUrl
+        } else {
+            
+            if (window.location.search == '') {
+                window.location = `${window.location.href}?page=${page}`
+
+            } else {
+                window.location = `${window.location.href}&page=${page}`}
+        }
+    }
+</script>
