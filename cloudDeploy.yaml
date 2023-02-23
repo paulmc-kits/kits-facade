@@ -25,7 +25,7 @@ steps:
     cp facade/service.yaml /data/service.yaml
     cp facade/cloudsql-secrets.yaml /data/cloudsql-secrets.yaml
     cp facade/ckanserviceaccount.yaml /date/ckanserviceaccount.yaml
-    #cp facade/cloudsql-secrets.yaml /data/cloudsql-secrets.yaml
+    cp facade/cloudsql-secrets.yaml /data/cloudsql-secrets.yaml
     cp facade/facade-pvc.yaml /data/facade-pvc.yaml
 
 - name: "gcr.io/cloud-builders/gke-deploy"
