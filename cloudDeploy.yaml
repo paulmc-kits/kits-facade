@@ -17,7 +17,7 @@ steps:
     sed -i "s/£GOV_NOTIFY_CONTACT_PAGE_TEMPLATE_ID/${_GOV_NOTIFY_CONTACT_PAGE_TEMPLATE_ID}/g" /data/deployment.yaml
     sed -i "s/£GOV_NOTIFY_CONTACT_INFO_EMAIL_TO/${_GOV_NOTIFY_CONTACT_INFO_EMAIL_TO}/g" /data/deployment.yaml
     sed -i "s#£FACADE_SEQUELIZE_URL#${_FACADE_SEQUELIZE_URL}#g" /data/deployment.yaml
-    sed "s/domain.name/${_DOMAIN_NAME}/g" facade/certificate.yaml > /data/certificate.yaml
+    sed "s/_DOMAIN_NAME/${_DOMAIN_NAME}/g" facade/certificate.yaml > /data/certificate.yaml
     sed -i "s#_WORKLOAD_SVC_ACCT#${_WORKLOAD_SVC_ACCT}#g" facade/ckanserviceaccount.yaml
     sed -i "s#_CONNECTIONNAME#${_CONNECTIONNAME}#g" facade/connectionname_configmap.yaml
     sed -i "s#_CLOUDSQL_RESOURCE_NAME#${_CLOUDSQL_RESOURCE_NAME}#g" facade/cloudsql-secrets.yaml
