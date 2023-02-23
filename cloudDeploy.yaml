@@ -34,8 +34,9 @@ steps:
   - --filename=/data/
   - --location=europe-west1
   - --namespace=${_NAMESPACE}
-  - --cluster=${PROJECT_ID}-cluster
+  - --cluster=${_CLUSTER}
   timeout: 600s
 
 substitutions:
     _NAMESPACE: kits-dft-test
+    _CLUSTER: kit-dft-test-cluster
