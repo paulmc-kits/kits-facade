@@ -37,4 +37,4 @@
   timeout: 600s
 
 substitutions:
-    _NAMESPACE: dft-nap-dev%
+    _NAMESPACE: kits-dft-test
