@@ -100,9 +100,9 @@ spec:
         # [END proxy_container]
       # [START volumes]
       volumes:
-        - name: ckan-data
+        - name: facade-data
           persistentVolumeClaim:
-            claimName: ckan-pvc
+            claimName: facade-pvc
         - name: cloudsql-instance-credentials
           csi:
             driver: secrets-store.csi.k8s.io
