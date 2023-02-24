@@ -1,0 +1,105 @@
+# docker-compose up -d --build
+# If "docker-compose logs ckan" shows DB not ready, run "docker-compose restart ckan" a few times.
+version: "3"
+
+volumes:
+  ckan_data:
+  pg_data:
+  solr_data:
+
+services:
+  ckan:
+    container_name: ckan
+    tty: true
+    image: europe-docker.pkg.dev/dft-rsss-findtransptdata-dev/dft-nap/ckan_295:4ade1c1
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - db
+    ports:
+      - "0.0.0.0:${CKAN_PORT}:5000"
+    env_file:
+      - ./.ckan-env
+    environment:
+      - CKAN_SQLALCHEMY_URL=postgresql://ckan:${POSTGRES_PASSWORD}@db/ckan
+      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:${POSTGRES_PASSWORD}@db/datastore
+      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:${DATASTORE_READONLY_PASSWORD}@db/datastore
+      - CKAN_SOLR_URL=http://solr:8983/solr/ckan
+      - CKAN_REDIS_URL=redis://redis:6379/1
+      - CKAN_SITE_URL=${CKAN_SITE_URL}
+      - CKAN_MAX_UPLOAD_SIZE_MB=${CKAN_MAX_UPLOAD_SIZE_MB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
+      - VERSION=${VERSION}
+      - GTM_ID=${GTM_ID}
+    volumes:
+      - ckan_data:/srv/app/data
+
+  facade:
+    container_name: facade
+    build:
+      context: ./
+    # TODO: depends_on:
+    networks:
+      - backend
+    ports:
+      - "${FACADE_PORT}:3000"
+      - "9229:9229"
+    environment:
+      - CKAN_API_KEY=${CKAN_API_KEY}
+      - CKAN_API_URL=${CKAN_API_URL}
+      - FACADE_SECRET_KEY=${FACADE_SECRET_KEY}
+    volumes:
+      - ./app:/src
+      # Don't overwrite the npm install'd node_modules dir inside the container
+      - /src/node_modules
+    command: npm run start:development
+
+  # datapusher:
+  #   container_name: datapusher
+  #   image: ghcr.io/keitaroinc/datapusher:${DATAPUSHER_VERSION}
+  #   networks:
+  #     - frontend
+  #     - backend
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - DATAPUSHER_MAX_CONTENT_LENGTH=${DATAPUSHER_MAX_CONTENT_LENGTH}
+  #     - DATAPUSHER_CHUNK_SIZE=${DATAPUSHER_CHUNK_SIZE}
+  #     - DATAPUSHER_CHUNK_INSERT_ROWS=${DATAPUSHER_CHUNK_INSERT_ROWS}
+  #     - DATAPUSHER_DOWNLOAD_TIMEOUT=${DATAPUSHER_DOWNLOAD_TIMEOUT}
+  #     - DATAPUSHER_SSL_VERIFY=${DATA_PUSHER_SSL_VERIFY}
+  #     - DATAPUSHER_REWRITE_RESOURCES=${DATAPUSHER_REWRITE_RESOURCES}
+  #     - DATAPUSHER_REWRITE_URL=${DATAPUSHER_REWRITE_URL}
+
+  db:
+    container_name: db
+    image: radicalgeektechnology/dft-nap-postgres
+    networks:
+      - backend
+    environment:
+      - DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/db
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./seed_data:/docker-entrypoint-initdb.d/seed/
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "ckan" ]
+
+  solr:
+    container_name: solr
+    image: radicalgeektechnology/dft-nap-solr
+    networks:
+      - backend
+    volumes:
+      - solr_data:/opt/solr/server/solr/ckan/data
+
+  redis:
+    container_name: redis
+    image: redis:latest
+
+networks:
+  frontend:
+  backend:
