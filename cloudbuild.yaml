@@ -23,8 +23,8 @@ steps:
   - '--build-arg'
   - 'version=$SHORT_SHA'
   - '-t'
-  - 'europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:$SHORT_SHA'
-  - './facade'
+  - 'europe-west2-docker.pkg.dev/fleet-coyote-341511/facade:$SHORT_SHA'
+  - '.'
 #  timeout: 660s
 
 
@@ -35,7 +35,7 @@ steps:
   id: Push
   args:
   - 'push'
-  - 'europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:$SHORT_SHA' 
+  - europe-west2-docker.pkg.dev/fleet-coyote-341511/facade:$SHORT_SHA
 # [END cloudbuild]
 
 # Access the id_github file from Secret Manager, and setup SSH
