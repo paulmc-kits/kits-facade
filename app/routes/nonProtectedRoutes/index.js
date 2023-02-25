@@ -5,13 +5,17 @@ const logger = require('../../lib/logger')
 const staticPagesRouter = require('../static-pages')
 
 const { viewBrowsePage } = require('../../controllers/browseController')
+const { publisherRequested } = require('../../controllers/publisherController')
 const { getDataFromAppLocals } = require('../../lib/common/utils')
 const { getDatasetDetails } = require('../../lib/services/ckan-dataset-apis')
 const { getLicenceDetails, getUpdateFrequency } = require('../../lib/ckan-constants')
 const { formatDate, convertNotes, getTimePeriod } = require('../../lib/formatters')
 const { feedbackUrls } = require('../../lib/constants')
+const { viewContactThankYouPage, viewContactPage, submitContactPage } = require('../../controllers/contactController')
 
 router.get('/browse', viewBrowsePage)
+router.get('/publisher-requested',publisherRequested)
+
 
 router.get('/dataset/detail/:datasetName',
     async (req, res, next) => {
@@ -50,6 +54,11 @@ router.get('/dataset/detail/:datasetName',
         }
     }
 )
+
+router.get('/contact-thankyou',viewContactThankYouPage)
+router.get('/contact',viewContactPage)
+router.post('/contact',submitContactPage)
+
 
 router.all(
     [

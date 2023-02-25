@@ -9,6 +9,9 @@ const feedbackUrls = {
 	dashboard: "https://www.smartsurvey.co.uk/s/XO8WUR/"
 };
 
+const rows = 20
+
 module.exports = {
-	feedbackUrls
+	feedbackUrls,
+	rows
 };

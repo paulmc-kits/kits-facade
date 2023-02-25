@@ -10,6 +10,8 @@ const routes = require('./routes')
 
 const logger = require('./lib/logger')
 const auth = require('./middleware/auth')
+const sequelize = require('./lib/database')
+
 
 const app = express()
 
@@ -41,6 +43,16 @@ app.use('/favicon.ico', express.static('public/images/favicon.ico'))
 app.use(
   '/assets/govuk/all.js',
   express.static(path.join('node_modules', 'govuk-frontend', 'govuk', 'all.js'))
+)
+
+app.use(
+  '/assets/accessible-autocomplete',
+  express.static(path.join('node_modules', 'accessible-autocomplete', 'dist'))
+)
+
+app.use(
+  '/assets/csv-writer.js',
+  express.static(path.join('lib','csv-writer.js'))
 )
 
 const viewPaths = [

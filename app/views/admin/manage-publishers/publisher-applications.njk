@@ -1,0 +1,80 @@
+{% set summary_list = [] %}
+
+{% set summary_list = (summary_list.push({
+            key: {
+                classes: "govuk-!-padding-0",
+                text: "Name:"
+            },
+            value: {
+            text: pendingApplication.full_name
+            }
+            }), summary_list) %}
+
+{% set summary_list = (summary_list.push({
+            key: {
+                classes: "govuk-!-padding-0",
+                text: "Email Address:"
+            },
+            value: {
+            text: pendingApplication.email_address
+            }
+            }), summary_list) %}
+
+            {% set organisationHtml %}
+
+            <span>
+                <span name="organisation_name_{{pendingApplication.id}}" value={{pendingApplication.organisation_name}}>
+                    {{pendingApplication.organisation_name}}
+                </span>
+                <div name="organisation_name_{{pendingApplication.id}}" style="display:none">
+                    <div id="autocompleteContainer_{{pendingApplication.id}}" class="autocomplete-wrapper ftd-inline-block"></div>
+                    {{ govukButton({
+                        text: "Save",
+                        attributes: {
+                  'id': "update_" + pendingApplication.id
+                }
+                    }) }}
+                </div>
+            </span>
+            
+            {% endset %}
+
+{% set summary_list = (summary_list.push({
+            key: {
+                classes: "govuk-!-padding-0",
+                text: "Organisation:"
+            },
+            value: {
+            html: organisationHtml 
+            }
+            }), summary_list) %}
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+<div class="govuk-grid-row" >
+    <div class="govuk-grid-column-full" >
+        {{ govukSummaryList({
+            classes: 'govuk-summary-list--no-border',
+            rows: summary_list
+        }) }}
+        {{ govukButton({
+            text: "Edit",
+            type:"button",
+            name:   "editPendingApplications",
+            value:pendingApplication.id
+        }) }}
+        {{ govukButton({
+            text: "Approve",
+            type:"button",
+            name: "approvePendingApplications_"+ pendingApplication.id
+
+        }) }}
+        {{ govukButton({
+            text: "Reject",
+            type:"button",
+            classes: "govuk-button--warning",
+            name:  "rejectPendingApplications_" + pendingApplication.id
+
+        }) }}
+    </div>
+</div>

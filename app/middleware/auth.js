@@ -46,7 +46,6 @@ const initialize = () => passport.initialize()
 const authenticate = (req, res, next) => {
     passport.authenticate('jwt', { session: false }, async (err, user, info) => {
         if (err || !user) {
-            res.app.locals = appendDataForAppLocals(res.app.locals, { error_summary: [errorsMessage[errors.NOT_AUTHORISED]] })
             res.locals = appendDataForAppLocals(res.locals, { authenticated: false })
         } else {
             // info used in next middleware

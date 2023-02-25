@@ -55,10 +55,20 @@ function getSortFields() {
     return sortFields
 }
 
+const pendingApplicationsSortFields = [
+    { name: "Select option", value: "" },
+    { name: "Oldest application", value: "createdAt ASC", default: true },
+    { name: "Organisation name", value: "organisation_name ASC" },
+    { name: "Publisher name", value: "full_name ASC" },
+  ];
+
+const getPendingApplicationsSortFields = () => pendingApplicationsSortFields
+
 module.exports = {
     getLicenceDetails,
     getUpdateFrequency,
     getAllLicenceDetails,
     getAllUpdateFrequency,
-    getSortFields
+    getSortFields,
+    getPendingApplicationsSortFields
 }

@@ -1,0 +1,20 @@
+{% extends "layouts/layout-govuk.njk" %}
+
+{% set title = "Publisher account" %}
+{% block pageTitle %}{{title}} - {{ super() }}
+{% endblock %}
+
+{% block content %}
+
+    <section>
+        <div>
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
+                {{ title }}
+            </h1>
+            <h2 class="govuk-heading-l govuk-!-margin-bottom-6">Thank you</h2>
+            <span class="govuk-caption-l govuk-!-width-two-thirds">
+                  Following verification someone will get back to you within 2 working days with outcome of your application and to explain the next steps
+            </span>
+        </div>
+    </section>
+{% endblock %}

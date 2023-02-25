@@ -15,6 +15,17 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
     }
+
+}
+
+.ftd-pagination-center {
+    display: flex;
+    justify-content:center !important;
+    align-items:center !important
+}
+
+.ftd-inline-block {
+    display: inline-block;
 }
 
 .ftd-margin-bottom-12 {
@@ -24,7 +35,15 @@
 .ftd-margin-left-40 { 
     margin-left:40px 
 }
-   
+
+.-ftd-margin-top-40 { 
+    margin-top:-40px 
+}
+
+.ftd-padding-y-30 { 
+    padding:30px 0px 
+}
+
 .filter-checkboxes {
     max-height: 200px;
     overflow-x: hidden;

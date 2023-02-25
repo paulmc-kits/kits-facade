@@ -1,0 +1,12 @@
+{% macro extendedList(params) %}
+
+    {%- if params.heading.text %}
+        <h1 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-0  {{ params.heading.classes}}">{{ params.heading.text }}</h1>
+    {% endif %}
+    <ul class="govuk-list">
+        {% for item in params.items %}
+            <li class="govuk-!-margin-bottom-2"><a href={{ item.href  if item.href else '#' }} class="govuk-link  {{ params.itemClasses }} {{ item.class }} ">{{ item.text }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% endmacro %}

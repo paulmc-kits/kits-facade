@@ -1,9 +1,10 @@
 const logger = require("../lib/logger")
 
-
 const { getTimePeriod, formatDate } = require("../lib/formatters")
-const { getDataFromAppLocals, appendDataForAppLocals, sortError, removeDataFromLocals, arrangeTagsInVerticalOrder, placeElementInLast } = require("../lib/common/utils")
+const { getDataFromAppLocals, sortError,  arrangeTagsInVerticalOrder, placeElementInLast } = require("../lib/common/utils")
 const { getUpdateFrequency, getAllLicenceDetails, getAllUpdateFrequency, getLicenceDetails } = require("../lib/ckan-constants")
+const { createError, extractError, generateQueryParamString, createDataToPassForward, extractForwardedData } = require("../lib/helper")
+const { getRedisCacheValue, deleteRedisValue, saveRedisValue } = require("../lib/redis-util")
 const { feedbackUrls } = require('../lib/constants')
 
 const { getTagList } = require("../lib/services/ckan-generic-apis")
@@ -46,10 +47,25 @@ const dashboardView = async (req, res, next) => {
 
 const createAndUpdateDatasetPageView = async (req, res, next) => {
     try {
+        const {error,info} = req.query
+        let error_summary = {}
+        let form_data = {}
+
+        if(error){
+            const errorResponse = await getRedisCacheValue(error)
+            error_summary= extractError(errorResponse,"error_summary")
+            await deleteRedisValue(error)
+        }
+        
+        if(info){
+            const formDataResponse = await getRedisCacheValue(info)
+            form_data= extractForwardedData(formDataResponse,"form_data")
+            await deleteRedisValue(info)
+        }
+
         const userData = getDataFromAppLocals(res.locals, 'user')
 
-        let form_data = {}
-        if(req.params.datasetId){
+        if(req.params.datasetId && req.params.datasetId !== "undefined"){
             const result = await getDatasetDetails(req.params.datasetId)
             form_data = result
         }
@@ -61,9 +77,6 @@ const createAndUpdateDatasetPageView = async (req, res, next) => {
         const location_tags = await getTagList('nap_locations')
         const region_tags = await getTagList('nap_regions')
         const licences = getAllLicenceDetails()
-
-        const error_summary = getDataFromAppLocals(res.app.locals, 'error_summary') || {}
-        res.app.locals = removeDataFromLocals(res.app.locals, 'error_summary')
 
 
         if (form_data.topics && !Array.isArray(form_data.topics)) {
@@ -79,7 +92,6 @@ const createAndUpdateDatasetPageView = async (req, res, next) => {
             form_data.road_networks = [form_data.road_networks]
         }
 
-        logger.info("error_sumary_inside: ", error_summary, form_data)
         res.render('dataset-new/index.njk', { userData,error_summary, form_data, organizations_available, licences, data_licences_list: getAllLicenceDetails(), frequencies: getAllUpdateFrequency(), topic_tags: arrangeTagsInVerticalOrder(topic_tags), transport_mode_tags: placeElementInLast(transport_mode_tags), road_network_tags: placeElementInLast(road_network_tags), location_tags: arrangeTagsInVerticalOrder(location_tags), region_tags: arrangeTagsInVerticalOrder(region_tags) })
     } catch (err) {
         logger.error(`Create Dataset ERROR: ${err}`)
@@ -113,10 +125,10 @@ const createAndUpdatePackage = async (req, res, next) => {
             const packageName = packageData.title.toLowerCase().replace(/ /g, "-")
             packageData.name = `${packageName}-${Date.now().toString(16)}`
 
-            if(req.params.datasetId){
+            if(req.params.datasetId && req.params.datasetId !== "undefined"){
                 packageData.id = req.params.datasetId
             }
-            const response =  req.params.datasetId ? await updateDataset(userApiKey,req.params.datasetId,packageData) : await createDataset(userApiKey, packageData) 
+            const response =  req.params.datasetId && req.params.datasetId  !== "undefined"? await updateDataset(userApiKey,req.params.datasetId,packageData) : await createDataset(userApiKey, packageData) 
             return res.redirect(`/dataset/detail/${response.name}`)
         }
 
@@ -124,8 +136,17 @@ const createAndUpdatePackage = async (req, res, next) => {
         logger.error(`create dataset Error ${err}`)
         const { status, info } = JSON.parse(err.message)
         if (status != 400 && info.__type == 'Validation Error') {
-            res.app.locals = appendDataForAppLocals(res.app.locals, { error_summary: sortError(info), form_data: { ...req.body } })
-            return req.params.datasetId ? res.redirect(`/dataset/edit/${req.params.datasetId}`) : res.redirect('/dataset/new')
+            
+            const [uniqueErrorId,error_summary] =  createError(sortError(info))
+            const saveError = await saveRedisValue(uniqueErrorId, error_summary);
+            
+            if(req.params.datasetId && req.params.datasetId !== "undefined") res.redirect(`/dataset/edit/${req.params.datasetId}${generateQueryParamString({"error":uniqueErrorId})}`)
+            else{
+                const [formDataId,form_data] =  createDataToPassForward({ ...req.body },"form_data")
+                const save = await saveRedisValue(formDataId, form_data);
+                
+                res.redirect(`/dataset/new${generateQueryParamString({"error":uniqueErrorId,"info":formDataId})}`)
+            }
         }
         else next(err)
     }

@@ -1,6 +1,10 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/footer/macro.njk" import govukFooter %}
 
+{# 
+
+Old feedback footer removed as part of FP-657
+
 <div class="govuk-width-container ftd-footer_feedback_container">
   <div class="govuk-grid-row ftd-feedback_footer_buttons govuk-!-padding-top-2 govuk-!-padding-bottom-2">
     <div class="govuk-grid-column-full ftd-feedback_footer_buttons " id="feedback-footer-buttons">
@@ -27,14 +31,14 @@
       <p class="govuk-body govuk-!-font-weight-bold ftd-feedback_message">Thank you for your feedback</p>
     </div>
   </div>
-</div>
+</div> #}
 
 {{ govukFooter({
   classes:"ftd-footer",
   meta: {
     items: [
       {
-        href: "mailto:findtransportdata@dft.gov.uk",
+        href: "/contact",
         text: "Email us if you have questions or need help"
       },
       {

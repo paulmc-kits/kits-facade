@@ -7,16 +7,29 @@
 {% extends "layouts/layout-govuk.njk" %}
 
 {# TODO: Sort out super title & how to pass it in #}
-{% set username_error = true if error_summary %}
-{% set password_error = true if error_summary %}
+{% set username_error = true if  error_summary['username_password'] %}
+{% set password_error = true if  error_summary['username_password'] %}
+{% set full_name_error = true if  error_summary['full_name'] %}
+{% set email_address_error = true if error_summary['email_address'] %}
+{% set organisation_name_error = true if  error_summary['organisation_name'] %}
 
 {% set error_messages = [] %}
-{% for error_message in error_summary %}
-    {{error_message}}
-    {% set error_messages = (error_messages.push({
-            text: error_message | replace("Login failed. Bad username or password.","Enter a correct username and password"),
+{% set username_password_errors = []%}
+
+{% for error_type , error_message in error_summary %}
+
+    {% if error_type != 'username_password' %}
+        {% set error_messages = (error_messages.push({
+            text: error_message,
+            href: "#field-"+ error_type
+        }), error_messages) %}
+    {%else%}
+        {% set username_password_errors = (username_password_errors.push({
+            text: error_message,
             href: "#field-login"
-            }), error_messages) %}
+        }), username_password_errors) %}
+    {%endif%}
+
 {% endfor %}
 
 {% set title = "Sign in" %}
@@ -41,64 +54,146 @@
 {# END: breadcrumbs #}
 
 {% block content %}
-    {% if error_summary %}
-        <div class="govuk-form-group govuk-form-group--error">
-        {% else %}
-            <div class="govuk-form-group">
-            {% endif %}
-            <form action="/login"  method="post">
-
-                <div class="govuk-form-group govuk-!-margin-top-6 ">
-                    {% call govukFieldset({
-                    classes:"govuk-!-padding-bottom-3",
-                    legend: {
-                        html: "<span class=\"govuk-caption-l\" style=\"color: #1d70b8; font-weight: 700;\">Sign in to create a metadata entry</span>
-                            <h1 class=\"govuk-heading-xl govuk-!-margin-bottom-6\">
-                                Sign in
-                            </h1>",
-                        classes: "govuk-fieldset__legend--l ",
-                        isPageHeading: true
-                    }
-                    }) %}
-                    <span class="govuk-caption-l">
-                            Enter the sign in details provided to you.
-                        </span>
-
-                    {% if error_summary%}
-                        {{ govukErrorSummary({
-                            titleText: "There is a problem",
-                            errorList : error_messages
-                            }) }}
-                    {% endif %}
-
-                    {{ govukInput({
-                            label: {
-                            text: "Username",
-                            classes: "govuk-label--l",
-                            isPageHeading: true
-                            },
-                            id: "username",
-                            name: "username",
-                            classes: "govuk-input--error" if username_error
-                        }) }}
-
-                    {{ govukInput({
-                            label: {
-                            text: "Password",
-                            classes: "govuk-label--l",
-                            isPageHeading: true
-                            },
-                            id: "password",
-                            name: "password",
-                            type:"password",
-                            classes: "govuk-input--error" if password_error
-                            }) }}
-                    {% endcall %}
-                </div>
-                {{ govukButton({
-                    text: "Sign in",
-                    type: "submit"
+        <div class="govuk-form-group">
+    
+        {% if error_messages.length %}
+            <div class="govuk-grid-row">
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList : error_messages,
+                    classes:"govuk-!-width-two-thirds"
                 }) }}
-            </form>
+            </div>
+        {% endif %}
 
-        {% endblock %}
+    <form action="/login"  method="post">
+
+        <div class="govuk-form-group govuk-!-margin-top-6 ">
+            {% call govukFieldset({
+            classes:"govuk-!-padding-bottom-3",
+            legend: {
+                html: "<span class=\"govuk-caption-l\" style=\"color: #1d70b8; font-weight: 700;\">Sign in to create a metadata entry</span>
+                    <h1 class=\"govuk-heading-xl govuk-!-margin-bottom-6\">
+                        Sign in to your publisher account
+                    </h1>",
+                classes: "govuk-fieldset__legend--l ",
+                isPageHeading: true
+            }
+            }) %}
+            <span class="govuk-caption-l">
+                Enter the sign in details provided to you.
+            </span>
+
+             {% if username_error or password_error %}
+                {{ govukErrorSummary({
+                    titleText: "There is a problem",
+                    errorList : username_password_errors
+                }) }}
+            {% endif %}
+
+            {{ govukInput({
+                    label: {
+                    text: "Username",
+                    classes: "govuk-label--l",
+                    isPageHeading: true
+                    },
+                    id: "username",
+                    name: "username",
+                    classes: "govuk-input--error" if username_error
+                }) }}
+
+            {{ govukInput({
+                    label: {
+                    text: "Password",
+                    classes: "govuk-label--l",
+                    isPageHeading: true
+                    },
+                    id: "password",
+                    name: "password",
+                    type:"password",
+                    classes: "govuk-input--error" if password_error
+                    }) }}
+            {% endcall %}
+        </div>
+        {{ govukButton({
+            text: "Sign in",
+            type: "submit"
+        }) }}
+    </form>
+    <form action="/register" method="post">
+        <div class="govuk-form-group govuk-!-margin-top-6 ">
+            {% call govukFieldset({
+            classes:"govuk-!-padding-bottom-3",
+            legend: {
+                html: "<h1 class=\"govuk-heading-xl govuk-!-margin-bottom-6\">
+                        Request an organisation or publisher account
+                    </h1>",
+                classes: "govuk-fieldset__legend--l ",
+                isPageHeading: true
+            }
+            }) %}
+                <span class="govuk-caption-l">
+                    Our service supports all transport-related data throughout the United Kingdom and is aimed at 
+                    legitimate data publishers where typically data is gathered from all Government departments, councils, 
+                    authorities, regional agencies and public transport organisations.
+                    <p>We are unable to authorise free email accounts such as those provided by Gmail, Yahoo and Hotmail, as all email domains must link to a trusted and verifiable organisation.</p>     
+                </span>
+               
+                {% if  error_summary['full_name']%}
+                        {% set full_name_error = {text: error_summary['full_name'], classes:"govuk-!-width-two-thirds", visuallyHiddenText:true} if 'full_name' in error_summary else null%}
+                    {% endif %} 
+                    
+                {{ govukInput({
+                        label: {
+                        text: "Full name",
+                        classes: "govuk-label--l",
+                        isPageHeading: true
+                        },
+                        errorMessage: full_name_error,
+                        value:form_data.full_name,
+                        id: "field-full_name",
+                        name: "full_name",
+                        classes: "govuk-input--error" if full_name_error
+                    }) }}
+
+                    {% if  error_summary['email_address']%}
+                        {% set email_address_error = {text: error_summary['email_address'], classes:"govuk-!-width-two-thirds", visuallyHiddenText:true} if 'email_address' in error_summary else null%}
+                    {% endif %} 
+                
+                {{ govukInput({
+                        label: {
+                        text: "Email address",
+                        classes: "govuk-label--l",
+                        isPageHeading: true
+                        },
+                        errorMessage: email_address_error,
+                        value:form_data.email_address,
+                        id: "field-email_address",
+                        name: "email_address",
+                        classes: "govuk-input--error" if email_address_error
+                    }) }}
+
+                     {% if  error_summary['organisation_name']%}
+                        {% set organisation_name_error = {text: error_summary['organisation_name'], classes:"govuk-!-width-two-thirds", visuallyHiddenText:true} if 'organisation_name' in error_summary else null%}
+                    {% endif %} 
+
+                {{ govukInput({
+                        label: {
+                        text: "Organisation name",
+                        classes: "govuk-label--l",
+                        isPageHeading: true
+                        },
+                        errorMessage: organisation_name_error,
+                        value:form_data.organisation_name,
+                        id: "field-organisation_name",
+                        name: "organisation_name",
+                        classes: "govuk-input--error" if organisation_name_error
+                    }) }}
+            {% endcall %}
+        </div>
+        {{ govukButton({
+            text: "Submit",
+            type: "submit"
+        }) }}
+    </form>
+{% endblock %}
