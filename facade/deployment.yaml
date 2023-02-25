@@ -22,7 +22,7 @@ spec:
       serviceAccountName: ckan-serviceaccount 
       containers:
         - name: facade
-          image: europe-west2-docker.pkg.dev/fleet-coyote-341511/facade:4fcb79f
+          image: europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:latest
           resources:
             limits:
                #memory: 512Mi
