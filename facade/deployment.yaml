@@ -68,7 +68,7 @@ spec:
           - name: FACADE_SEQUELIZE_URL
             value: £FACADE_SEQUELIZE_URL
           - name: ckan_redis_url
-            value: £CKAN_REDIS_URL 
+            value: CKAN_REDIS_URL 
         # <INSTANCE_CONNECTION> here to include your GCP
         # project, the region of your Cloud SQL instance and the name
         # of your Cloud SQL instance. The format is
