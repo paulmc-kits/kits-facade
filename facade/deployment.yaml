@@ -74,40 +74,40 @@ spec:
         # of your Cloud SQL instance. The format is
         # $PROJECT:$REGION:$INSTANCE
         # [START proxy_container]
-#        - name: cloudsql-proxy
-#          image: gcr.io/cloudsql-docker/gce-proxy:1.17
-#          resources:
-#            limits:
-#              memory: 100Mi
-#            requests:
-#              memory: 100Mi
-#          command: ["/cloud_sql_proxy",
-#                    "-instances=$(INSTANCE_CONNECTION)=tcp:5432",
-#                    "-credential_file=/secrets/cloudsql/key.json"]
-#          env:
-#          - name: INSTANCE_CONNECTION
-#            valueFrom:
-#              configMapKeyRef:
-#                key: connectionname
-#                name: connectionname
-#          # [START cloudsql_security_context]
-#          securityContext:
-#          #  runAsUser: 92  # non-root user
-#          #  allowPrivilegeEscalation: false
-#          # [END cloudsql_security_context]
-#          volumeMounts:
-#            - name: cloudsql-instance-credentials
-#              mountPath: /secrets/cloudsql
-#              readOnly: true
-#        # [END proxy_container]
-#      # [START volumes]
-#      volumes:
-#        - name: facade-data
-#          persistentVolumeClaim:
-#            claimName: facade-pvc
-#        - name: cloudsql-instance-credentials
-#          csi:
-#            driver: secrets-store.csi.k8s.io
-#            readOnly: true
-#            volumeAttributes:
-#              secretProviderClass: "cloudsql-secrets"            
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.17
+          resources:
+            limits:
+              memory: 100Mi
+            requests:
+              memory: 100Mi
+          command: ["/cloud_sql_proxy",
+                    "-instances=$(INSTANCE_CONNECTION)=tcp:5432",
+                    "-credential_file=/secrets/cloudsql/key.json"]
+          env:
+          - name: INSTANCE_CONNECTION
+            valueFrom:
+              configMapKeyRef:
+                key: connectionname
+                name: connectionname
+          # [START cloudsql_security_context]
+          securityContext:
+          #  runAsUser: 92  # non-root user
+          #  allowPrivilegeEscalation: false
+          # [END cloudsql_security_context]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+        # [END proxy_container]
+      # [START volumes]
+      volumes:
+        - name: facade-data
+          persistentVolumeClaim:
+            claimName: facade-pvc
+        - name: cloudsql-instance-credentials
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "cloudsql-secrets"            
