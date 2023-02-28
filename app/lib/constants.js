@@ -9,9 +9,14 @@ const feedbackUrls = {
 	dashboard: "https://www.smartsurvey.co.uk/s/XO8WUR/"
 };
 
+
+// Pagination constants
 const rows = 20
+const neighbourPage = 2
+
 
 module.exports = {
 	feedbackUrls,
-	rows
+	rows,
+	neighbourPage
 };

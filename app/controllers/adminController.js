@@ -11,7 +11,7 @@ const { getPendingApplicationsSortFields } = require("../lib/ckan-constants");
 const { pagination } = require("../lib/common/utils");
 const { dataStringify } = require("../lib/helper");
 const { sortField } = require("../database/util");
-const { rows } = require("../lib/constants");
+const { rows, neighbourPage } = require("../lib/constants");
 
 const adminDashboardView = async (req, res, next) =>
   res.render("admin/dashboard.njk");
@@ -39,7 +39,6 @@ const pendingPublisherView = async (req, res, next) => {
 
     // Pagination functionality
     const numberOfPages = Math.ceil(pendingApplications.count / rows);
-    const neighbourPage = 2;
     const pages = pagination(
       Number(neighbourPage),
       Number(currentPage),
@@ -88,8 +87,42 @@ const pendingPublisherView = async (req, res, next) => {
   }
 };
 
+const rejectedPublishersView = async (req,res,next) => {
+  try{
+    
+    const { page: currentPage = 1, sort } = req.query;
+    const start = rows * (currentPage - 1);
+
+    const sortFields = getPendingApplicationsSortFields();
+    const [sortValue , order] = sortField(sort,sortFields)
+
+    const rejectedApplications = await getPublisherRequestByStatus(
+      publisherApprovalStatuses.REJECTED,
+      start,
+      rows,
+      order
+    );
+
+       // Pagination functionality
+    const numberOfPages = Math.ceil(rejectedApplications.count / rows);
+    const pages = pagination(
+      Number(neighbourPage),
+      Number(currentPage),
+      numberOfPages
+    );
+
+    const paginationProps = { numberOfPages, pages, currentPage };
+    const paramValues  = {sortValue}
+    
+    res.render('admin/manage-publishers/rejected-publishers.njk',{...paginationProps,rejectedApplications: rejectedApplications.rows, paramValues,sortFields})
+  }catch(e){
+    logger.error(`rejectedView_error: ${e}`)
+  }
+}
+
 module.exports = {
   adminDashboardView,
   managePublishersView,
   pendingPublisherView,
+  rejectedPublishersView
 };

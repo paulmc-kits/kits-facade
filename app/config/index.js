@@ -11,7 +11,9 @@ const configVariableSchema = Joi.object({
     GOV_NOTIFY_PUBLISHER_REQUEST_TEMPLATE_ID:Joi.string(),
     GOV_NOTIFY_PUBLISHER_REQUEST_EMAIL_TO:Joi.string(),
     GOV_NOTIFY_CONTACT_PAGE_TEMPLATE_ID:Joi.string(),
-    GOV_NOTIFY_CONTACT_INFO_EMAIL_TO:Joi.string()
+    GOV_NOTIFY_CONTACT_INFO_EMAIL_TO:Joi.string(),
+    REDIS_HOST: Joi.string().hostname().required(),
+    REDIS_PORT: Joi.number().port().required()
 }).options({ abortEarly: false })
 
 const configVariable = {
@@ -23,7 +25,9 @@ const configVariable = {
     GOV_NOTIFY_PUBLISHER_REQUEST_TEMPLATE_ID:process.env.GOV_NOTIFY_PUBLISHER_REQUEST_TEMPLATE_ID ,
     GOV_NOTIFY_PUBLISHER_REQUEST_EMAIL_TO:process.env.GOV_NOTIFY_PUBLISHER_REQUEST_EMAIL_TO,
     GOV_NOTIFY_CONTACT_PAGE_TEMPLATE_ID:process.env.GOV_NOTIFY_CONTACT_PAGE_TEMPLATE_ID,
-    GOV_NOTIFY_CONTACT_INFO_EMAIL_TO:process.env.GOV_NOTIFY_CONTACT_INFO_EMAIL_TO 
+    GOV_NOTIFY_CONTACT_INFO_EMAIL_TO:process.env.GOV_NOTIFY_CONTACT_INFO_EMAIL_TO , 
+    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_PORT: process.env.REDIS_PORT
 }
 
 const configValidation = configVariableSchema.validate(configVariable);

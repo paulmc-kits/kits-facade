@@ -4,14 +4,14 @@ const { parseDatabaseErrors } = require("../util");
 
 const getAllPublisherRequest = () => PublisherRequest.findAll();
 
-const getPublisherRequestByStatus = (status, start, rows, sortField) =>
+const getPublisherRequestByStatus = (status, start , rows , sortField) =>
   PublisherRequest.findAndCountAll({
     where: {
       status,
     },
     offset: start,
     limit: rows,
-    order: [sortField],
+    order: sortField ? [sortField] : [],
     raw: true,
   });
 
