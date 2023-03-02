@@ -25,6 +25,7 @@ steps:
   - '-t'
   - 'europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:$SHORT_SHA'
   - '.'
+
 #  timeout: 660s
 
 
@@ -36,3 +37,58 @@ steps:
   args:
   - 'push'
   - 'europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:$SHORT_SHA'
+# [END cloudbuild]
+
+# Access the id_github file from Secret Manager, and setup SSH
+#- name: 'gcr.io/cloud-builders/git'
+#  secretEnv: ['SSH_KEY']
+#  entrypoint: 'bash'
+#  args:
+#  - -c
+#  - |
+3    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
+#    chmod 400 /root/.ssh/id_rsa
+#   cp known_hosts.github /root/.ssh/known_hosts
+#  volumes:
+#  - name: 'ssh'
+#    path: /root/.ssh
+
+# Clone the repository
+#- name: 'gcr.io/cloud-builders/git'
+#  args:
+#  - clone
+#  - --recurse-submodules
+#  - git@github.com:paulmc-kits/dft-k8-test.git 
+#  volumes:
+#  - name: 'ssh'
+#    path: /root/.ssh
+
+## This step generates the new manifest
+- name: 'gcr.io/cloud-builders/git'
+  secretEnv: ['SSH_KEY']
+  id: Generate manifest
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
+    chmod 400 /root/.ssh/id_rsa
+    cp known_hosts.github /root/.ssh/known_hosts
+    git config --global user.name "cloudbuilder"
+    git config --global user.email "cloudbuilder@gmail.com"
+  #  cd dft-k8-test
+  #  git push origin --delete candidate
+  #  git checkout -b candidate
+  #  sed "s/COMMIT_SHA/${SHORT_SHA}/g" manifests/facade/facade-deployment.yaml.tpl > manifests/facade/facade-deployment.yaml
+  #  git add manifest/facade/facade-deployment.yaml
+  #  git commit -m "europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:${SHORT_SHA} Built from commit ${COMMIT_SHA} of repository  Author: $(git log --format='%an <%te>' -n 1 HEAD)"
+  #  git push --set-upstream origin candidate
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/fleet-coyote-341511/secrets/SSH-KEY/versions/latest
+    env: 'SSH_KEY'
+
