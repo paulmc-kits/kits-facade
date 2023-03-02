@@ -83,12 +83,12 @@ steps:
   #  git add manifest/facade/facade-deployment.yaml
   #  git commit -m "europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:${SHORT_SHA} Built from commit ${COMMIT_SHA} of repository  Author: $(git log --format='%an <%te>' -n 1 HEAD)"
   #  git push --set-upstream origin candidate
-  volumes:
-  - name: 'ssh'
-    path: /root/.ssh
+  #volumes:
+  #- name: 'ssh'
+  #  path: /root/.ssh
 
-availableSecrets:
-  secretManager:
-  - versionName: projects/fleet-coyote-341511/secrets/SSH-KEY/versions/latest
-    env: 'SSH_KEY'
+#availableSecrets:
+#  secretManager:
+#  - versionName: projects/fleet-coyote-341511/secrets/SSH-KEY/versions/latest
+#    env: 'SSH_KEY'
 
