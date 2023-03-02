@@ -67,9 +67,11 @@ spec:
             value: £GOV_NOTIFY_CONTACT_INFO_EMAIL_TO
           - name: FACADE_SEQUELIZE_URL
             value: £FACADE_SEQUELIZE_URL
-          - name: CKAN_REDIS_URL
-            value: £CKAN_REDIS_URL 
-
+          - name: REDIS_HOST
+            value: "£REDIS_HOST" 
+          - name: REDIS_PORT
+            value: "£REDIS_PORT"
+        
         # <INSTANCE_CONNECTION> here to include your GCP
         # project, the region of your Cloud SQL instance and the name
         # of your Cloud SQL instance. The format is
