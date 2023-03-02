@@ -46,7 +46,7 @@ steps:
 #  args:
 #  - -c
 #  - |
-3    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
+#    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
 #    chmod 400 /root/.ssh/id_rsa
 #   cp known_hosts.github /root/.ssh/known_hosts
 #  volumes:
@@ -64,18 +64,18 @@ steps:
 #    path: /root/.ssh
 
 ## This step generates the new manifest
-- name: 'gcr.io/cloud-builders/git'
-  secretEnv: ['SSH_KEY']
-  id: Generate manifest
-  entrypoint: 'bash'
-  args:
-  - '-c'
-  - |
-    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
-    chmod 400 /root/.ssh/id_rsa
-    cp known_hosts.github /root/.ssh/known_hosts
-    git config --global user.name "cloudbuilder"
-    git config --global user.email "cloudbuilder@gmail.com"
+#- name: 'gcr.io/cloud-builders/git'
+#  secretEnv: ['SSH_KEY']
+#  id: Generate manifest
+#  entrypoint: 'bash'
+#  args:
+ # - '-c'
+#  - |
+#    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
+#    chmod 400 /root/.ssh/id_rsa
+#    cp known_hosts.github /root/.ssh/known_hosts
+#    git config --global user.name "cloudbuilder"
+#    git config --global user.email "cloudbuilder@gmail.com"
   #  cd dft-k8-test
   #  git push origin --delete candidate
   #  git checkout -b candidate
