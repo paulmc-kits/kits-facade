@@ -11,7 +11,7 @@ services:
   ckan:
     container_name: ckan
     tty: true
-    image: europe-docker.pkg.dev/dft-rsss-findtransptdata-dev/dft-nap/ckan_295:4ade1c1
+    image: europe-docker.pkg.dev/dft-rsss-findtransptdata-dev/dft-nap/ckan_297:1
     networks:
       - frontend
       - backend
@@ -40,7 +40,9 @@ services:
     container_name: facade
     build:
       context: ./
-    # TODO: depends_on:
+    depends_on:
+      - db
+      - redis
     networks:
       - backend
     ports:
@@ -50,6 +52,14 @@ services:
       - CKAN_API_KEY=${CKAN_API_KEY}
       - CKAN_API_URL=${CKAN_API_URL}
       - FACADE_SECRET_KEY=${FACADE_SECRET_KEY}
+      - FACADE_SEQUELIZE_URL=postgres://ckan:${POSTGRES_PASSWORD}@db/ckan
+      - GOV_NOTIFY_KEY=${GOV_NOTIFY_KEY}
+      - GOV_NOTIFY_PUBLISHER_REQUEST_TEMPLATE_ID=${GOV_NOTIFY_PUBLISHER_REQUEST_TEMPLATE_ID}
+      - GOV_NOTIFY_PUBLISHER_REQUEST_EMAIL_TO=${GOV_NOTIFY_PUBLISHER_REQUEST_EMAIL_TO}
+      - GOV_NOTIFY_CONTACT_PAGE_TEMPLATE_ID=${GOV_NOTIFY_CONTACT_PAGE_TEMPLATE_ID}
+      - GOV_NOTIFY_CONTACT_INFO_EMAIL_TO=${GOV_NOTIFY_CONTACT_INFO_EMAIL_TO}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
       - ./app:/src
       # Don't overwrite the npm install'd node_modules dir inside the container
@@ -75,7 +85,7 @@ services:
 
   db:
     container_name: db
-    image: radicalgeektechnology/dft-nap-postgres
+    image: europe-docker.pkg.dev/dft-rsss-findtransptdata-dev/dft-nap/postgres:0f4ec42
     networks:
       - backend
     environment:
@@ -90,7 +100,7 @@ services:
 
   solr:
     container_name: solr
-    image: radicalgeektechnology/dft-nap-solr
+    image: europe-docker.pkg.dev/dft-rsss-findtransptdata-dev/dft-nap/solr:e2b751c
     networks:
       - backend
     volumes:
@@ -99,6 +109,8 @@ services:
   redis:
     container_name: redis
     image: redis:latest
+    networks:
+      - backend
 
 networks:
   frontend:
