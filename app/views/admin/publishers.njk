@@ -1,0 +1,28 @@
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% extends "layouts/layout-govuk.njk" %}
+
+{% set title = "Admin - Manage Publishers" %}
+{% block pageTitle %}{{title}} - {{ super() }}
+{% endblock %}
+
+{# START: breadcrumbs #}
+{% block breadcrumbs %}
+    {{ govukBreadcrumbs({
+    items: [
+        {
+        text: "Home",
+        href: "/"
+        },
+        {
+        html: "<span class=\"govuk-!-font-weight-bold\">Main Dashbaord</span>",
+        href: "/admin-dashboard"
+        }
+    ]
+    }) }}
+{% endblock %}
+{# END: breadcrumbs #}
+
+{% block content %}
+
+{% endblock %}

@@ -1,0 +1,75 @@
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
+{% extends "layouts/layout-govuk.njk" %}
+
+{% set mainClasses = "govuk-main-wrapper--l" %}
+
+{% set full_name_error = true if  error_summary['full_name'] %}
+{% set email_address_error = true if error_summary['email_address'] %}
+{% set contact_subject_error = true if  error_summary['contact_subject'] %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">Contact Us</h1>
+            <p class="govuk-body-m">
+                If you require general assistance, have an enquire or need technical support contact us by filing in form below:
+            </p>
+
+            <form action="/contact" method="post">
+                {% if  error_summary['full_name']%}
+                    {% set full_name_error = {text: error_summary['full_name'], classes:"govuk-!-width-two-thirds", visuallyHiddenText:true} if 'full_name' in error_summary else null%}
+                {% endif %}
+                
+                {{ govukInput({
+                        label: {
+                        text: "Full name",
+                        classes: "govuk-!-font-size-19",
+                        isPageHeading: true
+                        },
+                        errorMessage: full_name_error,
+                        id: "field-full_name",
+                        name: "full_name",
+                        classes: "govuk-input--error" if full_name_error
+                    }) }}
+                
+                {% if  error_summary['email_address']%}
+                    {% set email_address_error = {text: error_summary['email_address'], classes:"govuk-!-width-two-thirds", visuallyHiddenText:true} if 'email_address' in error_summary else null%}
+                {% endif %}
+
+                {{ govukInput({
+                        label: {
+                        text: "Email address",
+                        classes: "govuk-!-font-size-19",
+                        isPageHeading: true
+                        },
+                        errorMessage: email_address_error,
+                        id: "field-email_address",
+                        name: "email_address",
+                        classes: "govuk-input--error" if email_address_error
+                    }) }}
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+                {{ govukCharacterCount({
+                        name: "contact_subject",
+                        id: "field_contact_subject",
+                        maxlength: 997,
+                        countMessage:{
+                            classes:"govuk-!-text-align-right "
+                        },
+                        label: {
+                        text: "What do you need help with?",
+                        classes:"govuk-!-font-size-19"
+                        }
+                    }) }}
+                {{ govukButton({
+                    classes:"-ftd-margin-top-40",
+                    text: "Send",
+                    type: "submit"
+                }) }}
+            </form>
+             <p class="govuk-body-m">
+                We aim to respond within 2 working days
+            </p>
+        </div>
+    </div>
+{% endblock %}

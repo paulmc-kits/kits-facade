@@ -1,0 +1,129 @@
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+
+{% extends "layouts/layout-govuk.njk" %}
+{% block pageScripts %}
+    {% include "includes/pagination-scripts/pagination-script.njk" %}
+{% endblock %}
+
+{% set title = "Rejected organisations & publisher applications" %}
+{% block pageTitle %}{{title}} - {{ super() }}
+{% endblock %}
+
+{% set sortFieldItems = [] %}
+{% for field in sortFields %}
+    {% set sortFieldItems = (sortFieldItems.push({
+                value:field.value,
+                text:field.name,
+                selected: true if (paramValues.sortValue == field.value or field.default)
+            }),sortFieldItems)%}
+{% endfor %}
+
+{% block breadcrumbs %}
+    {{ govukBreadcrumbs({
+    items: [
+        {
+        text: "Main dashboards",
+        href: "/admin-dashboard"
+        },
+        {
+        html: "<span class=\"govuk-!-font-weight-bold\">" + title + "</span>",
+        href: "/admin//manage-publishers/rejected"
+        }
+    ]
+    }) }}
+{% endblock %}
+{# END: breadcrumbs #}
+
+{% block content %}
+    <section class="module">
+        <form action="/admin/manage-publishers/rejected" method="get" id="rejected-forms">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-9">
+                {{ title }}
+            </h1>
+            {{ govukSelect({
+                id: "sort",
+                name: "sort",
+                label: {
+                    text: "Sort by",
+                    classes:"govuk-!-margin-right-3 ftd-inline"
+            },
+            formGroup:{
+                classes:"ftd-inline-block"
+            },
+            classes:"ftd-min-w-10  ",
+                items: sortFieldItems
+            }) }}
+
+            {{ govukButton({
+                    text: "Sort Results",
+                    type:"submit"
+            }) }}
+            
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    {% for rejectedApplication in rejectedApplications %}
+                        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                        {{ govukSummaryList({
+                            classes: 'govuk-summary-list--no-border',
+                            rows: [{
+                            key: {
+                                text: "Name:"
+                            },
+                            value: {
+                                text: rejectedApplication.full_name
+                            } 
+                            },
+                            {
+                            key: {
+                                text: "Email address:"
+                            },
+                            value: {
+                                text: rejectedApplication.email_address
+                            }
+                            },
+                            {
+                            key: {
+                                text: "Organisation:"
+                            },
+                            value: {
+                                html: rejectedApplication.organisation_name
+                            }
+                            }]
+                        }) }}
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <div class="govuk-grid-row">
+
+        {% set previousPage = currentPage | int - 1 %}
+        {% set nextPage = currentPage | int + 1 %}
+
+        {% set paginationItems = [] %}
+        {% for i in pages %}
+
+            {%set paginationItems = (paginationItems.push({
+                number: i,
+                current: true if (i == currentPage) else false,
+                href: "javascript:pageNavigation("+i+","+numberOfPages+")"
+            } if i != 'dots' else {ellipsis: true}),paginationItems)%}
+        {% endfor %}
+
+        {{ govukPagination({
+            classes:"ftd-pagination-center govuk-!-margin-bottom-0 govuk-!-margin-top-8",
+            previous: {
+                href: "javascript:pageNavigation(" + previousPage + "," + numberOfPages + ")" if ((currentPage) > 1) else null
+            },
+            next: {
+                href: "javascript:pageNavigation(" + nextPage + "," + numberOfPages + ")" if (currentPage  != numberOfPages) else null
+            },
+            items:paginationItems
+        }) }}
+    </div>
+
+{% endblock %}

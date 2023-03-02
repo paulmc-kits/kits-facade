@@ -1,0 +1,66 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
+
+{# 
+
+Old feedback footer removed as part of FP-657
+
+<div class="govuk-width-container ftd-footer_feedback_container">
+  <div class="govuk-grid-row ftd-feedback_footer_buttons govuk-!-padding-top-2 govuk-!-padding-bottom-2">
+    <div class="govuk-grid-column-full ftd-feedback_footer_buttons " id="feedback-footer-buttons">
+      <div class="govuk-button-group ftd-feedback_button_group govuk-!-margin-0 govuk-!-display-block">
+        <span class="govuk-body govuk-!-font-weight-bold ftd-feedback_label govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+          Is this page useful?
+        </span>
+        {{ govukButton({
+            classes: "ftd-feedback_button",
+            html: "Yes <span class=\"govuk-visually-hidden\">, this page is useful</span>"
+        }) }}
+
+        {{ govukButton({
+            classes: "ftd-feedback_button",
+            html: "No <span class=\"govuk-visually-hidden\">, this page is useful</span>"
+        }) }}
+
+        <a class="govuk-button ftd-feedback_button ftd-feedback_link" id="feedback-something-wrong-link" href="{{feedbackUrls['footerFeedback']}}">
+          There is something wrong with this page
+        </a>
+      </div>
+    </div>
+    <div class="govuk-grid-column-full ftd-feedback_hidden" id="feedback-alert">
+      <p class="govuk-body govuk-!-font-weight-bold ftd-feedback_message">Thank you for your feedback</p>
+    </div>
+  </div>
+</div> #}
+
+{{ govukFooter({
+  classes:"ftd-footer",
+  meta: {
+    items: [
+      {
+        href: "/contact",
+        text: "Email us if you have questions or need help"
+      },
+      {
+        href: "/accessibility",
+        text: "Accessibility"
+      },
+      {
+        href: "/cookies",
+        text: "Cookies"
+      },
+      {
+        href: "/privacy",
+        text: "Privacy"
+      },
+      {
+        href: "/terms-and-conditions",
+        text: "Terms and Conditions"
+      },
+      {
+        href: "/roadmap",
+        text: "Roadmap"
+      }
+    ]
+  }
+}) }}

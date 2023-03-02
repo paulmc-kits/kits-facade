@@ -1,0 +1,121 @@
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% from "components/listMacro.njk" import extendedList %}
+
+{% extends "layouts/layout-govuk.njk" %}
+
+{% set title = "Admin - Main Dashboard" %}
+{% block pageTitle %}{{title}} - {{ super() }}
+{% endblock %}
+
+{# START: breadcrumbs #}
+{% block breadcrumbs %}
+    {{ govukBreadcrumbs({
+    items: [
+        {
+        text: "Home",
+        href: "/"
+        },
+        {
+        html: "<span class=\"govuk-!-font-weight-bold\">Main Dashbaord</span>",
+        href: "/admin-dashboard"
+        }
+    ]
+    }) }}
+{% endblock %}
+{# END: breadcrumbs #}
+
+{% block content %}
+
+    <section class="module">
+        <div class="module-content">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-9">
+                {{ title }}
+            </h1>
+            <div class="govuk-!-margin-left-9">
+                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                <div class="govuk-!-width-full">
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-one-half">
+                            {{ extendedList({
+                            heading:{
+                                text:"Manage publishers"
+                            },
+                            itemClasses:"govuk-link--no-underline",
+                            items:[
+                                {
+                                    text:"Organisation & publisher applications"
+                                },
+                                {
+                                    text:"Approved organisations & publishers"
+                                },
+                                {
+                                    text:"Rejected organisations & publishers",
+                                    href:"/admin/manage-publishers/rejected"
+                                }
+                            ]
+                           }) }}
+                        </div>
+                        <div class="govuk-grid-row">
+                            <div class="govuk-grid-column-one-half">
+                                {{ extendedList({
+                            heading:{
+                                text:"System management"
+                            },
+                            itemClasses:"govuk-link--no-underline",
+                            items:[
+                                {
+                                    text:"Manage admin users"
+                                },
+                                {
+                                    text:"Review activity log"
+                                }
+                            ]
+                           }) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-half">
+                        {{ extendedList({
+                            heading:{
+                                text:"Manage reports"
+                            },
+                            itemClasses:"govuk-link--no-underline",
+                            items:[
+                                {
+                                    text:"Review geolocation"
+                                },
+                                {
+                                    text:"Review performance framework"
+                                },
+                                {
+                                    text:"Manage surveys"
+                                }
+                            ]
+                           }) }}
+                    </div>
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-one-half">
+                            {{ extendedList({
+                            heading:{
+                                text:"Metadata entry management"
+                            },
+                            itemClasses:"govuk-link--no-underline",
+                            items:[
+                                {
+                                    text:"Review metadata entries"
+                                }
+                            ]
+                           }) }}
+                        </div>
+                    </div>
+                </div>
+                       <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            </div>
+        </section>
+
+    {% endblock %}

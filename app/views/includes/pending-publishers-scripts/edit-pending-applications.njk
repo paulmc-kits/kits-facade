@@ -1,0 +1,114 @@
+<script>
+    const data = JSON.parse(decodeURI("{{organisations}}"))
+    const pendingPublisherApplicationData = JSON.parse(decodeURI("{{pendingPublisherApplications}}"))
+    const headers =  JSON.parse(decodeURI("{{csvHeaders}}"))
+
+    const editButtonElements = document.getElementsByName("editPendingApplications")
+
+    for (const editButtonElement of editButtonElements) {
+        const saveButtonId = `update_${editButtonElement.value}`
+        const autoCompleteId = `autocompleteContainer_${editButtonElement.value}`
+
+        const organisationNameListElements = document.getElementsByName(`organisation_name_${editButtonElement.value}`)
+        let organisationFieldText = organisationNameListElements[0].innerText
+        let organisationFieldValue = organisationNameListElements[0].getAttribute('value') 
+        
+        {# Render autocomplete #}
+        const autocompleteContainer = document.getElementById(autoCompleteId)
+
+        const autocomplete = accessibleAutocomplete({
+            id: autoCompleteId,
+            element: autocompleteContainer,
+            defaultValue: organisationFieldText,
+            source: function (query, populateResults) {
+                let results = query
+                    ? data.filter(function (option) {
+                        return option
+                            .display_name
+                            .toLowerCase()
+                            .indexOf(query.toLowerCase()) !== -1;
+                    })
+                    : data
+
+                results = results.map(function (option) {
+                    return {text: option.display_name, value: option.name};
+                });
+                populateResults(results);
+            },
+            showAllValues: true,
+            showNoOptionsFound: true,
+            dropdownArrow: (config) => '<svg class="' + config.className + '" style="top: 8px; z-index:0" viewBox="0 0 512 512" ><path d="M256,298.3L256,298.3L256,298.3l174.2-167.2c4.3-4.2,11.4-4.1,15.8,0.2l30.6,29.9c4.4,4.3,4.5,11.3,0.2,15.5L264.1,380.9  c-2.2,2.2-5.2,3.2-8.1,3c-3,0.1-5.9-0.9-8.1-3L35.2,176.7c-4.3-4.2-4.2-11.2,0.2-15.5L66,131.3c4.4-4.3,11.5-4.4,15.8-0.2L256,298.3  z"/></svg>',
+            templates: {
+                inputValue: (result) => result
+                    ?.text,
+                suggestion: (result) => result
+                    ?.text
+            },
+            onConfirm: function (option) {
+                // Option object has 'id' and 'text' properties
+                organisationFieldText = option
+                    ?.text || organisationFieldText
+                organisationFieldValue = option?.value || organisationFieldValue
+            }
+        });
+
+        {# Save Button #}
+        const saveOption = document.getElementById(saveButtonId)
+        saveOption.addEventListener('click', function () {
+                organisationNameListElements[0].innerText = organisationFieldText
+                organisationNameListElements[0].setAttribute('value', organisationFieldValue)
+
+                toggelOrganisationField(organisationNameListElements, editButtonElement)
+        }) 
+        
+        {# Save Button Finsish #} 
+        
+
+    {# Edit Button #}
+    editButtonElement.addEventListener('click', function () {
+        toggelOrganisationField(organisationNameListElements, this)
+    });
+    
+    {# Edit Button Finsish #}
+}
+
+    const toggelOrganisationField = (organisationNameListElements, button) => {
+        const approveButton = document.getElementsByName(`approvePendingApplications_${button.value}`)[0]
+        const rejectButton = document.getElementsByName(`rejectPendingApplications_${button.value}`)[0]
+
+        if (button.innerText === "Edit") {
+            button.innerText = "Cancel"
+            approveButton.disabled = true;
+            rejectButton.disabled = true;
+
+                    for (organisationNameListElement of organisationNameListElements) {
+                if (organisationNameListElement.style.display === "none") 
+                    organisationNameListElement.style.display = ""
+                else 
+                    organisationNameListElement.style.display = "none"
+            }
+        } else {
+            button.innerText = "Edit"
+            approveButton.disabled = false;
+            rejectButton.disabled = false;
+
+        for (organisationNameListElement of organisationNameListElements) {
+            if (organisationNameListElement.style.display === "none") 
+                organisationNameListElement.style.display = ""
+            else 
+                organisationNameListElement.style.display = "none"
+        }
+    }
+} 
+
+{# CSV file #}
+const downloadButton = document.getElementById('download_Csv')
+downloadButton.addEventListener('click', function () {
+
+    
+    const csv = convertToCSV(pendingPublisherApplicationData, headers)
+    downloadCSV(csv,"PendingPublisherApplications")
+
+}) 
+{# CSV file finish #}
+</script>

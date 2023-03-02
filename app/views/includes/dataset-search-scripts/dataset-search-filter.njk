@@ -1,0 +1,74 @@
+<script>
+    var filterFacetTags = document.getElementsByClassName("facet-tag__remove")
+
+    for (filterFacet of filterFacetTags) {
+        filterFacet.addEventListener("click", function(event) {
+            var elementId = event.currentTarget.dataset.value.toLowerCase();
+            var filterElement = document.getElementById(elementId);
+            if (filterElement.type === 'checkbox') {
+                filterElement.checked = !filterElement.checked;
+            } 
+            else if (filterElement.type === 'text' || filterElement.type === 'search' || filterElement.type === 'date') {
+                filterElement.value = "";
+            }
+            filterElement.form.submit();
+        });
+    }
+
+    const filterApplied = document.getElementById("remove_filters_link") || false;
+    if (filterApplied){
+        document.getElementById("remove_filters_link").addEventListener("click", function() {
+            event.preventDefault();
+            for (filterFacet of filterFacetTags) {
+                var elementId = filterFacet.dataset.value.toLowerCase();
+                var filterElement = document.getElementById(elementId);
+                if (filterElement.type === 'checkbox') {
+                    filterElement.checked = !filterElement.checked;
+                } 
+                else if (filterElement.type === 'text' || filterElement.type === 'search' || filterElement.type === 'date') {
+                    filterElement.value = "";
+                }
+            }
+            document.getElementById("search-form").submit();
+        });
+    }
+   
+
+
+    const debounce = (cb) => {
+        if (timeOutId) clearTimeout(timeOutId)
+        timeOutId = setTimeout(() => cb(), 500);
+    }
+
+    var searchFilterElements = document.getElementsByClassName("filter-input")
+    let timeOutId = null;
+
+    for (let searchFilterElement of searchFilterElements) {
+        searchFilterElement.addEventListener("input", function(event) {
+            var searchInputValue = event.target.value.toUpperCase();
+            var parentDiv = event.target.parentElement.parentElement;
+            var checkboxElements = parentDiv.nextElementSibling.getElementsByClassName("govuk-checkboxes__item");
+
+            if (searchFilterElement.hasAttribute('aria-describedby')) searchFilterElement.removeAttribute('aria-describedby')
+            debounce(() => {
+                let ids = []
+
+                for (checkBoxs of checkboxElements) {
+                    ids.push(checkBoxs.firstElementChild.id)
+                }
+                searchFilterElement.setAttribute('aria-describedby', ids.join(' '))
+            })
+
+            for (checkBox of checkboxElements) {
+                var checkBoxText = checkBox.textContent || checkBox.innerText;
+
+                if (checkBoxText.toUpperCase().indexOf(searchInputValue) > -1) {
+                    checkBox.style.display = "";
+                } else {
+                    checkBox.style.display = "none";
+                }
+            }
+
+        });
+    }
+</script>

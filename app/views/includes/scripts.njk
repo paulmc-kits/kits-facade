@@ -1,0 +1,12 @@
+<!-- Javascript -->
+<script type="text/javascript" src="/assets/csv-writer.js"></script>
+<script type="text/javascript" src="/assets/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+<script src="/assets/govuk/all.js"></script>
+<script>
+ document.addEventListener("DOMContentLoaded", function(event) {
+  const cookieSettingNoJSElement = document.getElementById('cookie-settings__no-js')
+  if(cookieSettingNoJSElement) cookieSettingNoJSElement.style = "display:none" 
+});
+
+  window.GOVUKFrontend.initAll()
+</script>
