@@ -24,8 +24,7 @@ steps:
   - '-c'
   - |
     export BUILD_NUMBER=$BUILD_ID
-    gcloud builds submit --async --substitutions=_BUILD_NUMBER=$BUILD_NUMBER .
-
+    gcloud builds submit --async --substitutions=BUILD_ID=$BUILD_NUMBER .
 
 
 # Step 3: Get the latest image hash from Artifact Registry.
