@@ -1,0 +1,68 @@
+steps:
+#- name: 'gcr.io/cloud-builders/docker'
+#  volumes:
+#  - name: 'manifestsvolume'
+#    path: '/data'
+#  entrypoint: 'bash'
+#  args:
+#  - '-c'
+#  - |
+#    gcloud artifacts docker images list europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade --include-tags  --sort-by="~UPDATE_TIME" --limit=2 | awk '{FS= " "} {print $3}'
+
+## Step 1: Get the latest image hash from Artifact Registry.
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    export IMAGE_HASH=$(gcloud artifacts repositories docker describe europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade --format='get(tag2digest["latest"])')
+
+# Step 2: Set the build number as an environment variable.
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    export BUILD_NUMBER=$BUILD_ID
+    gcloud builds submit --async --substitutions=_BUILD_NUMBER=$BUILD_NUMBER .
+
+
+
+# Step 3: Get the latest image hash from Artifact Registry.
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    gcloud artifacts docker images list europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade --include-tags  --sort-by="~UPDATE_TIME" --limit=1 > /workspace/hash.txt
+    cat /workspace/hash.txt | awk '{FS= " "} {print $3}'
+#| awk '{FS= " "} {print $3}' > /workspace/hash.txt
+
+
+
+#    export IMAGE_HASH=$(gcloud artifacts docker images list  europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade--format='get(tag2digest["latest"])')
+
+
+
+
+# Step 4: Verify that the build is successful.
+#- name: 'gcr.io/cloud-builders/docker'
+#  args: ['run', '-p', '3000:3000', 'europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/facade:6bf7efd', '/bin/sh', '-c', 'echo "Build Successful!"']
+
+
+#       gcrane ls europe-west2-docker.pkg.dev/fleet-coyote-341511/nap-theme/
+#- name: "gcr.io/cloud-builders/gke-deploy"
+#  volumes:
+#    - name: 'manifestsvolume'
+#      path: '/data'
+#  args:
+#  - run
+#  - --filename=/data/
+#  - --location=europe-west2
+#  - --namespace=${_NAMESPACE}
+#  - --cluster=${_CLUSTER}
+#  timeout: 600s
+#
+#substitutions:
+#    _NAMESPACE: kits-dft-test
+#    _CLUSTER: kits-dft-test-cluster
